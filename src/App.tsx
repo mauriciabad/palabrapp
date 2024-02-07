@@ -1,31 +1,32 @@
-import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-import { Database, Tables } from '../types/supabase'
+import { useState, useEffect } from 'react'
+import { Auth } from '@supabase/auth-ui-react'
+import { ThemeSupa } from '@supabase/auth-ui-shared'
+import { supabase } from './supabase'
+import { Session } from '@supabase/supabase-js'
+import { EntryList } from './EntryList'
 
-const supabase = createClient<Database>(
-  'https://tsnycpxyfsftylvafhbp.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzbnljcHh5ZnNmdHlsdmFmaGJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDczMTU5NDgsImV4cCI6MjAyMjg5MTk0OH0.Uah_7UWZu6d-zyIWYQqcIKYkmaHsF13vnnRLGtaHOck',
-)
-
-function App() {
-  const [entries, setEntries] = useState<Tables<'entries'>[] | null>(null)
+export default function App() {
+  const [session, setSession] = useState<Session | null>(null)
 
   useEffect(() => {
-    void getEntries()
+    void supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
-  async function getEntries() {
-    const { data } = await supabase.from('entries').select()
-    setEntries(data)
+  if (!session) {
+    return <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
   }
 
-  return (
-    <div>
-      <h1>Entries</h1>
-
-      <ul>{entries?.map((entry) => <li key={entry.id}>{entry.word}</li>)}</ul>
-    </div>
-  )
+  return <EntryList />
 }
-
-export default App
