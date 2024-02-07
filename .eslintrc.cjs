@@ -9,7 +9,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'types/supabase.ts'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',

@@ -5,3 +5,13 @@
 Small app for education. Spanish language students use it to track their vocabulary.
 
 Use it here: <https://palabrapp.mauri.app>
+
+## Develop
+
+To update the Supabase TypeScript types run:
+
+```zsh
+npx supabase login
+
+npx supabase gen types typescript --project-id "tsnycpxyfsftylvafhbp"  --schema public > types/supabase.ts
+```
