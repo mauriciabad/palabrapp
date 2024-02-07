@@ -4,11 +4,13 @@ import { Navbar } from './components/Navbar'
 
 export default function App() {
   return (
-    <>
+    <main className="mx-auto max-w-3xl">
       <Navbar />
       <LoginProtected>
-        <EntryList />
+        <div className="p-4">
+          <EntryList />
+        </div>
       </LoginProtected>
-    </>
+    </main>
   )
 }

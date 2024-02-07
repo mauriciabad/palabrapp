@@ -14,7 +14,7 @@ export const Navbar: FC = () => {
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">Palabrapp</a>
+        <a className="btn btn-ghost text-xl">📚 PalabrApp</a>
       </div>
       <div className="flex-none gap-2">
         <div className="dropdown dropdown-end">

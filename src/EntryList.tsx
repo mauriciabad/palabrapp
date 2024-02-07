@@ -16,9 +16,17 @@ export const EntryList: FC = () => {
 
   return (
     <div>
-      <h1>Mis palabras</h1>
+      <h1 className="text-center text-xl font-bold">Mis palabras</h1>
 
-      <ul>{entries?.map((entry) => <li key={entry.id}>{entry.word}</li>)}</ul>
+      <ul className="mt-4 space-y-4">
+        {entries?.map((entry) => (
+          <li key={entry.id} className="card border bg-white shadow-xl">
+            <div className="card-body p-4">
+              <p>{entry.word}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

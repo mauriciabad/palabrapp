@@ -1,4 +1,4 @@
-# Palabrapp
+# PalabrApp
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/afbb7365-3fa1-4c69-9cbb-486b2b328ab2/deploy-status)](https://app.netlify.com/sites/palabrapp2/deploys)
 
