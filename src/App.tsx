@@ -6,11 +6,11 @@ export default function App() {
   return (
     <main className="mx-auto max-w-3xl">
       <Navbar />
-      <LoginProtected>
-        <div className="p-4">
+      <div className="p-4">
+        <LoginProtected>
           <EntryList />
-        </div>
-      </LoginProtected>
+        </LoginProtected>
+      </div>
     </main>
   )
 }
