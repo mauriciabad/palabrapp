@@ -16,7 +16,7 @@ export const EntryList: FC = () => {
 
   return (
     <div>
-      <h1>Entries</h1>
+      <h1>Mis palabras</h1>
 
       <ul>{entries?.map((entry) => <li key={entry.id}>{entry.word}</li>)}</ul>
     </div>
