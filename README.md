@@ -15,3 +15,8 @@ npx supabase login
 
 npx supabase gen types typescript --project-id "tsnycpxyfsftylvafhbp"  --schema public > types/supabase.ts
 ```
+
+### Services
+
+- Supabase: <https://supabase.com/dashboard/project/tsnycpxyfsftylvafhbp>
+- Netlify: <https://app.netlify.com/sites/palabrapp2>
