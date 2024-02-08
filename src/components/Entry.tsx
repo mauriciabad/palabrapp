@@ -2,7 +2,6 @@ import { FC } from 'react'
 import { EntryFullInfo } from '../types/entries'
 
 export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
-  console.log(entry)
   return (
     <li className="card border bg-white shadow-xl">
       <div className="card-body p-4">
