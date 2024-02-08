@@ -1,9 +1,14 @@
 import { FC } from 'react'
 import { supabase } from '../supabase'
 import { IconDeviceFloppy } from '@tabler/icons-react'
-import { Form, redirect } from 'react-router-dom'
-import { FCForRouter } from '../types/loaders'
+import { Form, redirect, useLoaderData } from 'react-router-dom'
+import { FCForRouter, LoaderData } from '../types/loaders'
 import { Tables } from '../../types/supabase'
+
+const loader = async () => {
+  const { data: categories } = await supabase.from('categories').select()
+  return { categories }
+}
 
 const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData()
@@ -19,7 +24,10 @@ const action = async ({ request }: { request: Request }) => {
 
 export const EntryNew: FCForRouter<{
   action: typeof action
+  loader: typeof loader
 }> = () => {
+  const { categories } = useLoaderData() as LoaderData<typeof loader>
+
   return (
     <div className="pb-20">
       <h1 className="mb-4 text-center text-xl font-bold">Crear palabra</h1>
@@ -54,6 +62,28 @@ export const EntryNew: FCForRouter<{
         </label>
         <label className="form-control w-full">
           <div className="label">
+            <span className="label-text">
+              Categoria<span className="text-red-500">*</span>
+            </span>
+          </div>
+          <select
+            className="select select-bordered w-full bg-white"
+            name="category_id"
+            required
+            defaultValue=""
+          >
+            <option disabled value="">
+              Selecciona una categoría
+            </option>
+            {categories?.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.icon} {category.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="form-control w-full">
+          <div className="label">
             <span className="label-text">Notas</span>
           </div>
           <textarea
@@ -69,6 +99,7 @@ export const EntryNew: FCForRouter<{
 }
 
 EntryNew.action = action
+EntryNew.loader = loader
 
 const SaveButton: FC = () => {
   return (

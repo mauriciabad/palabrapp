@@ -6,12 +6,13 @@ import { FCForRouter, LoaderData } from '../types/loaders'
 
 const loader = async ({ params }: { params: Params<'id'> }) => {
   if (!params.id) return { entry: undefined }
-  const { data } = await supabase
+  const { data: entry } = await supabase
     .from('entries')
     .select()
     .eq('id', params.id)
     .single()
-  return { entry: data }
+  const { data: categories } = await supabase.from('categories').select()
+  return { entry, categories }
 }
 
 const action = async ({
@@ -32,7 +33,7 @@ export const EntryEdit: FCForRouter<{
   action: typeof action
   loader: typeof loader
 }> = () => {
-  const { entry } = useLoaderData() as LoaderData<typeof loader>
+  const { entry, categories } = useLoaderData() as LoaderData<typeof loader>
 
   return (
     <div className="pb-20">
@@ -68,6 +69,31 @@ export const EntryEdit: FCForRouter<{
               placeholder="Escribe aquí"
               className="textarea textarea-bordered w-full bg-white"
             />
+          </label>
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">
+                Categoria<span className="text-red-500">*</span>
+              </span>
+            </div>
+            <select
+              className="select select-bordered w-full bg-white"
+              defaultValue={entry.category_id}
+              name="category_id"
+              required
+            >
+              {categories ? (
+                categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.icon} {category.name}
+                  </option>
+                ))
+              ) : (
+                <option disabled value={entry.category_id}>
+                  Categoria actual
+                </option>
+              )}
+            </select>
           </label>
           <label className="form-control w-full">
             <div className="label">

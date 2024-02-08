@@ -3,11 +3,14 @@ import { Entry } from '../components/Entry'
 import { IconPlus } from '@tabler/icons-react'
 import { Link, useLoaderData } from 'react-router-dom'
 import { FCForRouter, LoaderData } from '../types/loaders'
-import { selectAllEntries } from '../types/entries'
+import { selectEntryFullInfo } from '../types/entries'
+import { supabase } from '../supabase'
 
 const loader = async () => {
-  const { data } = await selectAllEntries
-  return { entries: data }
+  const { data: entries } = await supabase
+    .from('entries')
+    .select(selectEntryFullInfo)
+  return { entries }
 }
 
 export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {

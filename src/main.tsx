@@ -41,6 +41,7 @@ const router = createBrowserRouter([
         path: 'palabras/nueva',
         element: <EntryNew />,
         action: EntryNew.action,
+        loader: EntryNew.loader,
       },
     ],
   },
