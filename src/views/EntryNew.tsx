@@ -4,6 +4,7 @@ import { IconDeviceFloppy } from '@tabler/icons-react'
 import { Form, redirect, useLoaderData } from 'react-router-dom'
 import { FCForRouter, LoaderData } from '../types/loaders'
 import { Tables } from '../../types/supabase'
+import { cn } from '../utils/cn'
 
 const loader = async () => {
   const { data: categories } = await supabase.from('categories').select()
@@ -30,7 +31,10 @@ export const EntryNew: FCForRouter<{
 
   return (
     <div className="pb-20">
-      <h1 className="mb-4 text-center text-xl font-bold">Crear palabra</h1>
+      <div className="-mt-4 mb-4">
+        <h1 className="text-center text-xl font-bold">Crear palabra</h1>
+        <Process value={0} />
+      </div>
 
       <Form method="post">
         <label className="form-control w-full">
@@ -118,5 +122,53 @@ const SaveButton: FC = () => {
       </svg>
       Guardar
     </button>
+  )
+}
+
+const steps = [
+  {
+    id: 1,
+    icon: '✏️',
+    text: 'Escribir',
+  },
+  {
+    id: 2,
+    icon: '💬',
+    text: 'Decir',
+  },
+  {
+    id: 3,
+    icon: '🎨',
+    text: 'Dibujar',
+  },
+  {
+    id: 4,
+    icon: '💡',
+    text: 'Usar',
+  },
+  {
+    id: 5,
+    icon: '🗂️',
+    text: 'Clasificar',
+  },
+] as const satisfies { id: number; icon: string; text: string }[]
+
+const Process: FC<{
+  value: number
+}> = ({ value }) => {
+  return (
+    <div className="overflow-x-auto">
+      <ul className="steps w-full">
+        {steps.map((step) => (
+          <li
+            key={step.id}
+            data-content={step.icon}
+            className={cn('step', step.id <= value + 1 && 'step-secondary')}
+          >
+            {step.text}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
