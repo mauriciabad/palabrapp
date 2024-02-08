@@ -4,7 +4,7 @@ import Root from './Root.tsx'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { EntryList } from './views/EntryList.tsx'
-import { EntryNew } from './views/EntryNew.tsx'
+import { EntryNew } from './views/entry-new/EntryNew.tsx'
 import { EntryEdit } from './views/EntryEdit.tsx'
 import { EntryView } from './views/EntryView.tsx'
 
