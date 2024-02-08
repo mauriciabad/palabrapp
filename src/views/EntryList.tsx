@@ -1,28 +1,20 @@
-import { FC, useEffect, useState } from 'react'
-import { Tables } from '../../types/supabase'
+import { FC } from 'react'
 import { supabase } from '../supabase'
 import { Entry } from '../components/Entry'
 import { IconPlus } from '@tabler/icons-react'
+import { Link, useLoaderData } from 'react-router-dom'
+import { FCWithLoader, LoaderData } from '../types/loaders'
 
-export const EntryList: FC = () => {
-  const [entries, setEntries] = useState<Tables<'entries'>[] | null>(null)
-  const [loading, setLoading] = useState(false)
+const loader = async () => {
+  const { data } = await supabase.from('entries').select()
+  return { entries: data }
+}
 
-  useEffect(() => {
-    void getEntries()
-  }, [])
-
-  async function getEntries() {
-    setLoading(true)
-    try {
-      const { data } = await supabase.from('entries').select()
-      setEntries(data)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
-  }
+export const EntryList: FCWithLoader<
+  Record<string, never>,
+  typeof loader
+> = () => {
+  const { entries } = useLoaderData() as LoaderData<typeof loader>
 
   return (
     <div className="pb-20">
@@ -30,7 +22,6 @@ export const EntryList: FC = () => {
 
       <CreateButton />
 
-      {loading && <p className="mt-4 text-center">Cargando...</p>}
       {entries ? (
         <ul className="mt-4 space-y-4">
           {entries.map((entry) => (
@@ -44,13 +35,13 @@ export const EntryList: FC = () => {
   )
 }
 
+EntryList.loader = loader
+
 const CreateButton: FC = () => {
   return (
-    <button
-      className="btn btn-lg btn-primary fixed bottom-4 left-4 z-10 shadow-xl"
-      onClick={() => {
-        console.log('CreateButton')
-      }}
+    <Link
+      className="btn btn-primary btn-lg fixed bottom-4 left-4 z-10 shadow-xl"
+      to="/new"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -62,6 +53,6 @@ const CreateButton: FC = () => {
         <IconPlus />
       </svg>
       Añadir palabra
-    </button>
+    </Link>
   )
 }

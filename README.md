@@ -13,7 +13,7 @@ To update the Supabase TypeScript types run:
 ```zsh
 npx supabase login
 
-npx supabase gen types typescript --project-id "tsnycpxyfsftylvafhbp"  --schema public > types/supabase.ts
+npm run sync-db-types
 ```
 
 ### Services
