@@ -14,21 +14,38 @@ export type Database = {
           created_at: string
           estimated_frequency: number | null
           id: number
+          notes: string | null
+          sentence: string
+          user_id: string
           word: string
         }
         Insert: {
           created_at?: string
           estimated_frequency?: number | null
           id?: number
+          notes?: string | null
+          sentence: string
+          user_id?: string
           word: string
         }
         Update: {
           created_at?: string
           estimated_frequency?: number | null
           id?: number
+          notes?: string | null
+          sentence?: string
+          user_id?: string
           word?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "entries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
