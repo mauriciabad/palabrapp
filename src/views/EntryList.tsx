@@ -3,29 +3,28 @@ import { supabase } from '../supabase'
 import { Entry } from '../components/Entry'
 import { IconPlus } from '@tabler/icons-react'
 import { Link, useLoaderData } from 'react-router-dom'
-import { FCWithLoader, LoaderData } from '../types/loaders'
+import { FCForRouter, LoaderData } from '../types/loaders'
 
 const loader = async () => {
   const { data } = await supabase.from('entries').select()
   return { entries: data }
 }
 
-export const EntryList: FCWithLoader<
-  Record<string, never>,
-  typeof loader
-> = () => {
+export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
   const { entries } = useLoaderData() as LoaderData<typeof loader>
 
   return (
     <div className="pb-20">
-      <h1 className="text-center text-xl font-bold">Mis palabras</h1>
+      <h1 className="mb-4 text-center text-xl font-bold">Mis palabras</h1>
 
       <CreateButton />
 
       {entries ? (
         <ul className="mt-4 space-y-4">
           {entries.map((entry) => (
-            <Entry key={entry.id} entry={entry} />
+            <Link key={entry.id} to={`/palabras/${entry.id}`} className="block">
+              <Entry entry={entry} />
+            </Link>
           ))}
         </ul>
       ) : (
@@ -41,7 +40,7 @@ const CreateButton: FC = () => {
   return (
     <Link
       className="btn btn-primary btn-lg fixed bottom-4 left-4 z-10 shadow-xl"
-      to="/new"
+      to="/palabras/nueva"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -4,6 +4,9 @@ import Root from './Root.tsx'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { EntryList } from './views/EntryList.tsx'
+import { EntryNew } from './views/EntryNew.tsx'
+import { EntryEdit } from './views/EntryEdit.tsx'
+import { EntryView } from './views/EntryView.tsx'
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('No root element found')
@@ -19,8 +22,25 @@ const router = createBrowserRouter([
         loader: EntryList.loader,
       },
       {
-        path: 'new',
-        element: <div>New</div>,
+        path: 'palabras/',
+        element: <EntryList />,
+        loader: EntryList.loader,
+      },
+      {
+        path: 'palabras/:id',
+        element: <EntryView />,
+        loader: EntryView.loader,
+      },
+      {
+        path: 'palabras/:id/editar',
+        element: <EntryEdit />,
+        action: EntryEdit.action,
+        loader: EntryEdit.loader,
+      },
+      {
+        path: 'palabras/nueva',
+        element: <EntryNew />,
+        action: EntryNew.action,
       },
     ],
   },

@@ -8,7 +8,7 @@ export const Entry: FC<{ entry: Tables<'entries'> }> = ({ entry }) => {
         <p className="text-lg font-bold">{entry.word}</p>
         <p className="text-pretty italic">{entry.sentence}</p>
         {entry.notes && (
-          <p className="border-base-100 text-pretty border-t-2 pt-2 text-stone-600">
+          <p className="text-pretty border-t-2 border-base-100 pt-2 text-stone-600">
             {entry.notes}
           </p>
         )}

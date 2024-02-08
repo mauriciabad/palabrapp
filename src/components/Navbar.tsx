@@ -2,6 +2,7 @@ import { FC } from 'react'
 import { supabase } from '../supabase'
 import { IconMenu2 } from '@tabler/icons-react'
 import { useAuth } from '../hooks/useAuth'
+import { Link } from 'react-router-dom'
 
 async function signOut() {
   const { error } = await supabase.auth.signOut()
@@ -14,7 +15,9 @@ export const Navbar: FC = () => {
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">📚 PalabrApp</a>
+        <Link className="btn btn-ghost text-xl" to="/">
+          📚 PalabrApp
+        </Link>
       </div>
       {user && (
         <div className="flex-none gap-2">
@@ -22,13 +25,13 @@ export const Navbar: FC = () => {
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-circle avatar"
+              className="avatar btn btn-circle btn-ghost"
             >
               <IconMenu2 size={24} />
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content rounded-box z-[1] mt-3 w-52 bg-white p-2 shadow"
+              className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-white p-2 shadow"
             >
               <li>
                 <button
