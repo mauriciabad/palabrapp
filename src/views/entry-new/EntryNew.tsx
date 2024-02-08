@@ -130,7 +130,7 @@ interface Step {
 
 const Process: FC<{
   value: number
-  steps: Step[]
+  steps: readonly Step[]
 }> = ({ value, steps }) => {
   return (
     <div className="overflow-x-auto">
