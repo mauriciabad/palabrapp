@@ -25,7 +25,7 @@ export const EntryNew: FCForRouter<{
       <h1 className="mb-4 text-center text-xl font-bold">Crear palabra</h1>
 
       <Form method="post">
-        <label className="form-control w-full max-w-xs">
+        <label className="form-control w-full">
           <div className="label">
             <span className="label-text">Palabra</span>
           </div>
@@ -34,10 +34,10 @@ export const EntryNew: FCForRouter<{
             name="word"
             required
             placeholder="Escribe aquí"
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full"
           />
         </label>
-        <label className="form-control w-full max-w-xs">
+        <label className="form-control w-full">
           <div className="label">
             <span className="label-text">Frase</span>
           </div>
@@ -45,7 +45,7 @@ export const EntryNew: FCForRouter<{
             name="sentence"
             required
             placeholder="Escribe aquí"
-            className="textarea textarea-bordered w-full max-w-xs"
+            className="textarea textarea-bordered w-full"
           />
         </label>
         <SaveButton />

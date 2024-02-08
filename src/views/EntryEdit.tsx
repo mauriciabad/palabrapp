@@ -40,7 +40,7 @@ export const EntryEdit: FCForRouter<{
 
       {entry ? (
         <Form method="post">
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Palabra</span>
             </div>
@@ -49,11 +49,11 @@ export const EntryEdit: FCForRouter<{
               name="word"
               required
               placeholder="Escribe aquí"
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full"
               defaultValue={entry.word}
             />
           </label>
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Frase</span>
             </div>
@@ -62,7 +62,7 @@ export const EntryEdit: FCForRouter<{
               required
               defaultValue={entry.sentence}
               placeholder="Escribe aquí"
-              className="textarea textarea-bordered w-full max-w-xs"
+              className="textarea textarea-bordered w-full"
             />
           </label>
           <SaveButton />
