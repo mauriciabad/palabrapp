@@ -1,4 +1,4 @@
-import { EntryList } from './EntryList'
+import { EntryList } from './views/EntryList'
 import { LoginProtected } from './LoginProtected'
 import { Navbar } from './components/Navbar'
 
