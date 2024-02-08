@@ -1,12 +1,12 @@
 import { FC } from 'react'
-import { supabase } from '../supabase'
 import { Entry } from '../components/Entry'
 import { IconPlus } from '@tabler/icons-react'
 import { Link, useLoaderData } from 'react-router-dom'
 import { FCForRouter, LoaderData } from '../types/loaders'
+import { selectAllEntries } from '../types/entries'
 
 const loader = async () => {
-  const { data } = await supabase.from('entries').select()
+  const { data } = await selectAllEntries
   return { entries: data }
 }
 

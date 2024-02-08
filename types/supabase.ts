@@ -9,8 +9,59 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      categories: {
+        Row: {
+          category_group_id: number
+          created_at: string
+          icon: string
+          id: number
+          name: string
+        }
+        Insert: {
+          category_group_id: number
+          created_at?: string
+          icon: string
+          id?: number
+          name: string
+        }
+        Update: {
+          category_group_id?: number
+          created_at?: string
+          icon?: string
+          id?: number
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_category_group_id_fkey"
+            columns: ["category_group_id"]
+            isOneToOne: false
+            referencedRelation: "category_groups"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      category_groups: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
       entries: {
         Row: {
+          category_id: number
           created_at: string
           estimated_frequency: number | null
           id: number
@@ -20,6 +71,7 @@ export type Database = {
           word: string
         }
         Insert: {
+          category_id: number
           created_at?: string
           estimated_frequency?: number | null
           id?: number
@@ -29,6 +81,7 @@ export type Database = {
           word: string
         }
         Update: {
+          category_id?: number
           created_at?: string
           estimated_frequency?: number | null
           id?: number
@@ -38,6 +91,13 @@ export type Database = {
           word?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "entries_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "entries_user_id_fkey"
             columns: ["user_id"]

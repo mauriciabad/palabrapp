@@ -1,17 +1,13 @@
 import { FC } from 'react'
-import { supabase } from '../supabase'
 import { Entry } from '../components/Entry'
 import { IconPencil } from '@tabler/icons-react'
 import { Link, Params, useLoaderData } from 'react-router-dom'
 import { FCForRouter, LoaderData } from '../types/loaders'
+import { selectAllEntries } from '../types/entries'
 
 const loader = async ({ params }: { params: Params<'id'> }) => {
   if (!params.id) return { entry: undefined }
-  const { data } = await supabase
-    .from('entries')
-    .select()
-    .eq('id', params.id)
-    .single()
+  const { data } = await selectAllEntries.eq('id', params.id).single()
   return { entry: data }
 }
 
