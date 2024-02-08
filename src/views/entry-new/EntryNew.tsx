@@ -65,7 +65,7 @@ export const EntryNew: FCForRouter<{
       text: 'Clasificar',
       content: <StepClasify categories={categories} />,
     },
-  ] as const satisfies Step[]
+  ] as const satisfies readonly Step[]
 
   return (
     <div className="pb-20">
