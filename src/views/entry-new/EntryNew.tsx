@@ -101,7 +101,7 @@ export const EntryNew: FCForRouter<{
         />
       ),
     },
-  ] as const satisfies Step[]
+  ] as const satisfies readonly Step[]
 
   const [validSteps, setValidSteps] = useState<Record<number, boolean>>(
     Object.fromEntries(
@@ -198,7 +198,7 @@ interface Step {
 
 const Process: FC<{
   value: number
-  steps: Step[]
+  steps: readonly Step[]
   setCurrentStep: (value: number) => void
 }> = ({ value, steps, setCurrentStep }) => {
   return (
