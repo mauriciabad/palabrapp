@@ -1,9 +1,15 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Tables } from '../../../types/supabase'
 
-export const StepClasify: FC<{ categories: Tables<'categories'>[] | null }> = ({
-  categories,
-}) => {
+export const StepClasify: FC<{
+  categories: Tables<'categories'>[] | null
+  setStepValidity: (enabled: boolean) => void
+}> = ({ categories, setStepValidity }) => {
+  const [category, setCategory] = useState('')
+
+  useEffect(() => {
+    setStepValidity(Boolean(category))
+  }, [category, setStepValidity])
   return (
     <>
       <label className="form-control w-full">
@@ -16,7 +22,10 @@ export const StepClasify: FC<{ categories: Tables<'categories'>[] | null }> = ({
           className="select select-bordered w-full bg-white"
           name="category_id"
           required
-          defaultValue=""
+          value={category}
+          onChange={(e) => {
+            setCategory(e.target.value)
+          }}
         >
           <option disabled value="">
             Selecciona una categoría

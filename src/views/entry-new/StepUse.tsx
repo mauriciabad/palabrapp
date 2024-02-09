@@ -1,6 +1,13 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 
-export const StepUse: FC = () => {
+export const StepUse: FC<{
+  setStepValidity: (enabled: boolean) => void
+}> = ({ setStepValidity }) => {
+  const [sentence, setSentence] = useState('')
+
+  useEffect(() => {
+    setStepValidity(Boolean(sentence))
+  }, [sentence, setStepValidity])
   return (
     <>
       <label className="form-control w-full">
@@ -14,6 +21,10 @@ export const StepUse: FC = () => {
           required
           placeholder="Escribe aquí"
           className="textarea textarea-bordered w-full bg-white"
+          value={sentence}
+          onChange={(e) => {
+            setSentence(e.target.value)
+          }}
         />
       </label>
 

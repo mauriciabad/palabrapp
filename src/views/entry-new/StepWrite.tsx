@@ -1,6 +1,14 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 
-export const StepWrite: FC = () => {
+export const StepWrite: FC<{
+  setStepValidity: (enabled: boolean) => void
+}> = ({ setStepValidity }) => {
+  const [word, setWord] = useState('')
+
+  useEffect(() => {
+    setStepValidity(Boolean(word))
+  }, [word, setStepValidity])
+
   return (
     <>
       <label className="form-control w-full">
@@ -15,6 +23,10 @@ export const StepWrite: FC = () => {
           required
           placeholder="Escribe aquí"
           className="input input-bordered w-full bg-white"
+          value={word}
+          onChange={(e) => {
+            setWord(e.target.value)
+          }}
         />
       </label>
     </>

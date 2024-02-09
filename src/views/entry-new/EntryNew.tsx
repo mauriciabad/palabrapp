@@ -1,4 +1,4 @@
-import { FC, ReactNode, useState } from 'react'
+import { FC, ReactNode, useCallback, useState } from 'react'
 import { supabase } from '../../supabase'
 import { Form, redirect, useLoaderData } from 'react-router-dom'
 import { FCForRouter, LoaderData } from '../../types/loaders'
@@ -39,42 +39,107 @@ export const EntryNew: FCForRouter<{
       id: 1,
       icon: '✏️',
       text: 'Escribir',
-      content: <StepWrite />,
+      nextEnabledByDefault: false,
+      content: (
+        <StepWrite
+          setStepValidity={useCallback((value) => {
+            setValidStep(1, value)
+          }, [])}
+        />
+      ),
     },
     {
       id: 2,
       icon: '💬',
       text: 'Decir',
-      content: <StepSay />,
+      nextEnabledByDefault: true,
+      content: (
+        <StepSay
+          setStepValidity={useCallback((value) => {
+            setValidStep(2, value)
+          }, [])}
+        />
+      ),
     },
     {
       id: 3,
       icon: '🎨',
       text: 'Dibujar',
-      content: <StepDraw />,
+      nextEnabledByDefault: true,
+      content: (
+        <StepDraw
+          setStepValidity={useCallback((value) => {
+            setValidStep(3, value)
+          }, [])}
+        />
+      ),
     },
     {
       id: 4,
       icon: '💡',
       text: 'Usar',
-      content: <StepUse />,
+      nextEnabledByDefault: false,
+      content: (
+        <StepUse
+          setStepValidity={useCallback((value) => {
+            setValidStep(4, value)
+          }, [])}
+        />
+      ),
     },
     {
       id: 5,
       icon: '🗂️',
       text: 'Clasificar',
-      content: <StepClasify categories={categories} />,
+      nextEnabledByDefault: false,
+      content: (
+        <StepClasify
+          setStepValidity={useCallback((value) => {
+            setValidStep(5, value)
+          }, [])}
+          categories={categories}
+        />
+      ),
     },
   ] as const satisfies Step[]
 
+  const [validSteps, setValidSteps] = useState<Record<number, boolean>>(
+    Object.fromEntries(
+      steps.map((step) => [step.id, !!step.nextEnabledByDefault]),
+    ),
+  )
+  const setValidStep = (step: number, enabled: boolean) => {
+    setValidSteps((prev) => ({ ...prev, [step]: enabled }))
+  }
+
+  const goToNextStep = () => {
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length))
+  }
+  const goToPrevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1))
+  }
   return (
     <div className="pb-20">
       <div className="-mt-4 mb-4">
         <h1 className="text-center text-xl font-bold">Crear palabra</h1>
-        <Process value={currentStep} steps={steps} />
+        <Process
+          value={currentStep}
+          steps={steps}
+          setCurrentStep={setCurrentStep}
+        />
       </div>
 
-      <Form method="post">
+      <Form
+        method="post"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+            if (currentStep === steps.length) return
+
+            e.preventDefault()
+            if (validSteps[currentStep]) goToNextStep()
+          }
+        }}
+      >
         {steps.map((step) => (
           <div
             key={step.id}
@@ -88,26 +153,28 @@ export const EntryNew: FCForRouter<{
           {currentStep >= 2 && (
             <button
               type="button"
-              onClick={() => {
-                setCurrentStep((prev) => Math.max(prev - 1, 1))
-              }}
+              onClick={goToPrevStep}
               className="bg-base-300"
             >
               Anterior
             </button>
           )}
           {currentStep === steps.length ? (
-            <button type="submit" className="bg-primary">
+            <button
+              type="submit"
+              className="bg-primary"
+              disabled={!validSteps[currentStep]}
+            >
               Guardar
             </button>
           ) : (
             <button
               type="button"
-              onClick={() => {
-                setCurrentStep((prev) => Math.min(prev + 1, steps.length))
-              }}
+              onClick={goToNextStep}
               className="bg-primary"
-              disabled={currentStep === steps.length}
+              disabled={
+                !validSteps[currentStep] || currentStep === steps.length
+              }
             >
               Siguiente
             </button>
@@ -126,12 +193,14 @@ interface Step {
   icon: string
   text: string
   content: ReactNode
+  nextEnabledByDefault?: boolean
 }
 
 const Process: FC<{
   value: number
   steps: Step[]
-}> = ({ value, steps }) => {
+  setCurrentStep: (value: number) => void
+}> = ({ value, steps, setCurrentStep }) => {
   return (
     <div className="overflow-x-auto">
       <ul className="steps w-full">
@@ -139,7 +208,14 @@ const Process: FC<{
           <li
             key={step.id}
             data-content={step.icon}
-            className={cn('step', step.id <= value && 'step-secondary')}
+            className={cn(
+              'step',
+              step.id <= value && 'step-secondary',
+              step.id < value && 'cursor-pointer',
+            )}
+            onClick={() => {
+              if (step.id < value) setCurrentStep(step.id)
+            }}
           >
             {step.text}
           </li>
