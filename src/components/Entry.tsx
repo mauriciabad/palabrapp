@@ -1,8 +1,12 @@
 import { FC } from 'react'
 import { EntryFullInfo } from '../types/entries'
-import { IconWriting } from '@tabler/icons-react'
+import { IconPlayerPlay, IconWriting } from '@tabler/icons-react'
+import { useAudio } from '../hooks/useAudio'
+import { IconPlayerPause } from '@tabler/icons-react'
 
 export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
+  const { playing, toggle } = useAudio(entry.pronunciation)
+
   return (
     <li className="card border bg-white shadow-xl">
       <div className="card-body p-4">
@@ -30,18 +34,22 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
               </div>
             )}
           </div>
+          {entry.pronunciation && (
+            <button
+              className="btn btn-circle btn-outline"
+              onClick={(e) => {
+                e.preventDefault()
+                toggle()
+              }}
+            >
+              {playing ? <IconPlayerPause /> : <IconPlayerPlay />}
+            </button>
+          )}
         </div>
         {entry.notes && (
           <p className="text-pretty border-t-2 border-base-100 pt-2 text-stone-600">
             {entry.notes}
           </p>
-        )}
-        {entry.pronunciation && (
-          <audio
-            controls
-            src={entry.pronunciation}
-            className="mt-2 w-full"
-          ></audio>
         )}
       </div>
     </li>
