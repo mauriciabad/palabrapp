@@ -10,6 +10,7 @@ const loader = async () => {
   const { data: entries } = await supabase
     .from('entries')
     .select(selectEntryFullInfo)
+    .order('word', { ascending: true })
   return { entries }
 }
 
