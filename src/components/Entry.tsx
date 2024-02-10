@@ -27,7 +27,7 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
             <p className="text-pretty italic">{entry.sentence}</p>
             {entry.categories && (
               <div>
-                <span className="badge">
+                <span className="leading-1 badge h-auto text-balance">
                   <span className="me-1">{entry.categories.icon}</span>
                   {entry.categories.name}
                 </span>
