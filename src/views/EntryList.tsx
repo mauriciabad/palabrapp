@@ -26,7 +26,11 @@ export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
       {entries ? (
         <ul className="mt-4 space-y-4">
           {entries.map((entry) => (
-            <Link key={entry.id} to={`/palabras/${entry.id}`} className="block">
+            <Link
+              key={entry.id}
+              to={`/palabras/${entry.id}/editar`}
+              className="block"
+            >
               <Entry entry={entry} />
             </Link>
           ))}
