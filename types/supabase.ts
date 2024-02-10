@@ -67,6 +67,7 @@ export type Database = {
           estimated_frequency: number | null
           id: number
           notes: string | null
+          pronunciation: string | null
           sentence: string
           user_id: string
           word: string
@@ -78,6 +79,7 @@ export type Database = {
           estimated_frequency?: number | null
           id?: number
           notes?: string | null
+          pronunciation?: string | null
           sentence: string
           user_id?: string
           word: string
@@ -89,6 +91,7 @@ export type Database = {
           estimated_frequency?: number | null
           id?: number
           notes?: string | null
+          pronunciation?: string | null
           sentence?: string
           user_id?: string
           word?: string

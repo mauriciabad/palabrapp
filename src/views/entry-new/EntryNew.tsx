@@ -18,6 +18,7 @@ const loader = async () => {
 const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData()
   const updates = Object.fromEntries(formData)
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -38,13 +39,15 @@ const action = async ({ request }: { request: Request }) => {
   if (entryError) throw new Error(entryError.message)
   const entryId = entryData.id
 
+  // --- Drawing ---
+
   const drawingFile = updates.drawing
   if (drawingFile && drawingFile instanceof File) {
     const fileExtension = getFileExtension(drawingFile.name)
     const { data: drawingData, error: drawingError } = await supabase.storage
       .from('main')
       .upload(
-        `private/${userId}/${word}-${entryId}.${fileExtension}`,
+        `private/${userId}/${word}-${entryId}-drawing.${fileExtension}`,
         drawingFile,
       )
     if (drawingError) throw new Error(drawingError.message)
@@ -55,6 +58,29 @@ const action = async ({ request }: { request: Request }) => {
     await supabase
       .from('entries')
       .update({ drawing: uploadedDrawing.publicUrl })
+      .eq('id', entryId)
+  }
+
+  // --- Pronunciation ---
+
+  const pronunciationFile = updates.pronunciation
+  if (pronunciationFile && pronunciationFile instanceof File) {
+    const fileExtension = getFileExtension(pronunciationFile.name)
+    const { data: pronunciationData, error: pronunciationError } =
+      await supabase.storage
+        .from('main')
+        .upload(
+          `private/${userId}/${word}-${entryId}-pronunciation.${fileExtension}`,
+          pronunciationFile,
+        )
+    if (pronunciationError) throw new Error(pronunciationError.message)
+    const { data: uploadedPronunciation } = supabase.storage
+      .from('main')
+      .getPublicUrl(pronunciationData.path)
+
+    await supabase
+      .from('entries')
+      .update({ pronunciation: uploadedPronunciation.publicUrl })
       .eq('id', entryId)
   }
 

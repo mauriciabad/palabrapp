@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect, useRef } from 'react'
 import { useVoiceRecorder } from 'use-voice-recorder'
 import { useState } from 'react'
 import { cn } from '../../utils/cn'
@@ -9,25 +9,48 @@ export const StepSay: FC<{
 }> = () => {
   const [record, setRecord] = useState<Blob | null>(null)
   const { isRecording, stop, start } = useVoiceRecorder(setRecord)
+  const pronunciationInput = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    const container = new DataTransfer()
+    if (record) {
+      container.items.add(
+        new File([record], 'pronunciation.wav', {
+          type: 'image/wav',
+          lastModified: new Date().getTime(),
+        }),
+      )
+    } else {
+      container.items.clear()
+    }
+
+    if (pronunciationInput.current) {
+      pronunciationInput.current.files = container.files
+    }
+  }, [record, pronunciationInput])
 
   return (
     <>
+      <input
+        type="file"
+        name="pronunciation"
+        ref={pronunciationInput}
+        className="hidden"
+      />
       <button
-        onMouseDown={(e) => {
-          e.preventDefault()
+        onMouseDown={() => {
           void start()
         }}
-        onMouseUp={(e) => {
-          e.preventDefault()
+        onMouseUp={() => {
           stop()
         }}
-        onTouchStart={(e) => {
-          e.preventDefault()
+        onTouchStart={() => {
           void start()
         }}
-        onTouchEnd={(e) => {
-          e.preventDefault()
+        onTouchEnd={() => {
           stop()
+        }}
+        onContextMenu={(e) => {
+          e.preventDefault()
         }}
         className={cn(
           'btn btn-circle btn-primary btn-lg relative',

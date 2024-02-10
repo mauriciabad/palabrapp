@@ -36,6 +36,13 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
             {entry.notes}
           </p>
         )}
+        {entry.pronunciation && (
+          <audio
+            controls
+            src={entry.pronunciation}
+            className="mt-2 w-full"
+          ></audio>
+        )}
       </div>
     </li>
   )
