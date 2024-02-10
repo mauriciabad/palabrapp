@@ -39,20 +39,24 @@ EntryView.loader = loader
 
 const EditButton: FC<{ id: number }> = ({ id }) => {
   return (
-    <Link
-      className="btn btn-primary btn-lg fixed bottom-4 left-4 z-10 shadow-xl"
-      to={`/palabras/${id}/editar`}
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <IconPencil />
-      </svg>
-      Editar palabra
-    </Link>
+    <div className="fixed inset-x-0 bottom-0 z-10 ">
+      <div className="mx-auto max-w-3xl p-4">
+        <Link
+          className="btn btn-primary btn-lg shadow-xl"
+          to={`/palabras/${id}/editar`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <IconPencil />
+          </svg>
+          Editar palabra
+        </Link>
+      </div>
+    </div>
   )
 }
