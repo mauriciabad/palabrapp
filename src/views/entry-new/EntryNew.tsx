@@ -2,13 +2,13 @@ import { FC, ReactNode, useCallback, useState } from 'react'
 import { supabase } from '../../supabase'
 import { Form, redirect, useLoaderData } from 'react-router-dom'
 import { FCForRouter, LoaderData } from '../../types/loaders'
-import { Tables } from '../../../types/supabase'
 import { cn } from '../../utils/cn'
 import { StepWrite } from './StepWrite'
 import { StepSay } from './StepSay'
 import { StepDraw } from './StepDraw'
 import { StepUse } from './StepUse'
 import { StepClasify } from './StepClasify'
+import { getFileExtension } from '../../utils/storage'
 
 const loader = async () => {
   const { data: categories } = await supabase.from('categories').select()
@@ -17,14 +17,48 @@ const loader = async () => {
 
 const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData()
-  const updates = Object.fromEntries(formData) as unknown as Tables<'entries'>
-  const { data } = await supabase
+  const updates = Object.fromEntries(formData)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error('User not authenticated')
+  const userId = user.id
+  const word = String(updates.word)
+
+  const { data: entryData, error: entryError } = await supabase
     .from('entries')
-    .insert(updates)
+    .insert({
+      word: word,
+      sentence: String(updates.sentence),
+      notes: String(updates.notes),
+      category_id: Number(updates.category_id),
+    })
     .select('id')
     .single()
-  if (!data) throw new Error('No data')
-  return redirect(`/palabras/${data.id}`)
+  if (entryError) throw new Error(entryError.message)
+  const entryId = entryData.id
+
+  const drawingFile = updates.drawing
+  if (drawingFile && drawingFile instanceof File) {
+    const fileExtension = getFileExtension(drawingFile.name)
+    const { data: drawingData, error: drawingError } = await supabase.storage
+      .from('main')
+      .upload(
+        `private/${userId}/${word}-${entryId}.${fileExtension}`,
+        drawingFile,
+      )
+    if (drawingError) throw new Error(drawingError.message)
+    const { data: uploadedDrawing } = supabase.storage
+      .from('main')
+      .getPublicUrl(drawingData.path)
+
+    await supabase
+      .from('entries')
+      .update({ drawing: uploadedDrawing.publicUrl })
+      .eq('id', entryId)
+  }
+
+  return redirect(`/palabras/${entryId}`)
 }
 
 export const EntryNew: FCForRouter<{
@@ -131,6 +165,7 @@ export const EntryNew: FCForRouter<{
 
       <Form
         method="post"
+        encType="multipart/form-data"
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
             if (currentStep === steps.length) return
