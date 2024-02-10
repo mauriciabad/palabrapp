@@ -24,12 +24,11 @@ const action = async ({ request }: { request: Request }) => {
   } = await supabase.auth.getUser()
   if (!user) throw new Error('User not authenticated')
   const userId = user.id
-  const word = String(updates.word)
 
   const { data: entryData, error: entryError } = await supabase
     .from('entries')
     .insert({
-      word: word,
+      word: String(updates.word),
       sentence: String(updates.sentence),
       notes: String(updates.notes),
       category_id: Number(updates.category_id),
@@ -42,13 +41,16 @@ const action = async ({ request }: { request: Request }) => {
   // --- Drawing ---
 
   const drawingFile = updates.drawing
-  if (drawingFile && drawingFile instanceof File) {
+  if (drawingFile && drawingFile instanceof File && drawingFile.size > 0) {
     const fileExtension = getFileExtension(drawingFile.name)
     const { data: drawingData, error: drawingError } = await supabase.storage
       .from('main')
       .upload(
-        `private/${userId}/${word}-${entryId}-drawing.${fileExtension}`,
+        `private/${userId}/drawing-${entryId}.${fileExtension}`,
         drawingFile,
+        {
+          upsert: true,
+        },
       )
     if (drawingError) throw new Error(drawingError.message)
     const { data: uploadedDrawing } = supabase.storage
@@ -64,14 +66,21 @@ const action = async ({ request }: { request: Request }) => {
   // --- Pronunciation ---
 
   const pronunciationFile = updates.pronunciation
-  if (pronunciationFile && pronunciationFile instanceof File) {
+  if (
+    pronunciationFile &&
+    pronunciationFile instanceof File &&
+    pronunciationFile.size > 0
+  ) {
     const fileExtension = getFileExtension(pronunciationFile.name)
     const { data: pronunciationData, error: pronunciationError } =
       await supabase.storage
         .from('main')
         .upload(
-          `private/${userId}/${word}-${entryId}-pronunciation.${fileExtension}`,
+          `private/${userId}/pronunciation-${entryId}.${fileExtension}`,
           pronunciationFile,
+          {
+            upsert: true,
+          },
         )
     if (pronunciationError) throw new Error(pronunciationError.message)
     const { data: uploadedPronunciation } = supabase.storage

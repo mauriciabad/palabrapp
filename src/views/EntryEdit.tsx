@@ -3,6 +3,8 @@ import { supabase } from '../supabase'
 import { IconDeviceFloppy } from '@tabler/icons-react'
 import { Form, Params, redirect, useLoaderData } from 'react-router-dom'
 import { FCForRouter, LoaderData } from '../types/loaders'
+import { Recorder } from '../components/Recorder'
+import { getFileExtension } from '../utils/storage'
 
 const loader = async ({ params }: { params: Params<'id'> }) => {
   if (!params.id) return { entry: undefined }
@@ -22,11 +24,83 @@ const action = async ({
   request: Request
   params: Params<'id'>
 }) => {
-  if (!params.id) throw new Error('No id')
+  const entryId = params.id
+  if (!entryId) throw new Error('No id')
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error('User not authenticated')
+  const userId = user.id
+
   const formData = await request.formData()
   const updates = Object.fromEntries(formData)
-  await supabase.from('entries').update(updates).eq('id', params.id)
-  return redirect(`/palabras/${params.id}`)
+  await supabase
+    .from('entries')
+    .update({
+      word: String(updates.word),
+      sentence: String(updates.sentence),
+      notes: String(updates.notes),
+      category_id: Number(updates.category_id),
+    })
+    .eq('id', entryId)
+
+  // --- Drawing ---
+
+  const drawingFile = updates.drawing
+  if (drawingFile && drawingFile instanceof File && drawingFile.size > 0) {
+    const fileExtension = getFileExtension(drawingFile.name)
+    const { data: drawingData, error: drawingError } = await supabase.storage
+      .from('main')
+      .upload(
+        `private/${userId}/drawing-${entryId}.${fileExtension}`,
+        drawingFile,
+        {
+          upsert: true,
+        },
+      )
+    if (drawingError) throw new Error(drawingError.message)
+    const { data: uploadedDrawing } = supabase.storage
+      .from('main')
+      .getPublicUrl(drawingData.path)
+
+    await supabase
+      .from('entries')
+      .update({ drawing: uploadedDrawing.publicUrl })
+      .eq('id', entryId)
+  }
+
+  // --- Pronunciation ---
+
+  const pronunciationFile = updates.pronunciation
+  if (
+    pronunciationFile &&
+    pronunciationFile instanceof File &&
+    pronunciationFile.size > 0
+  ) {
+    const fileExtension = getFileExtension(pronunciationFile.name)
+    const { data: pronunciationData, error: pronunciationError } =
+      await supabase.storage
+        .from('main')
+        .upload(
+          `private/${userId}/pronunciation-${entryId}.${fileExtension}`,
+          pronunciationFile,
+          {
+            upsert: true,
+          },
+        )
+    if (pronunciationError) throw new Error(pronunciationError.message)
+    const { data: uploadedPronunciation } = supabase.storage
+      .from('main')
+      .getPublicUrl(pronunciationData.path)
+
+    await supabase
+      .from('entries')
+      .update({ pronunciation: uploadedPronunciation.publicUrl })
+      .eq('id', entryId)
+  }
+
+  return redirect(`/palabras/${entryId}`)
 }
 
 export const EntryEdit: FCForRouter<{
@@ -40,7 +114,7 @@ export const EntryEdit: FCForRouter<{
       <h1 className="mb-4 text-center text-xl font-bold">Editar palabra</h1>
 
       {entry ? (
-        <Form method="post">
+        <Form method="post" encType="multipart/form-data">
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
@@ -56,6 +130,7 @@ export const EntryEdit: FCForRouter<{
               defaultValue={entry.word}
             />
           </label>
+
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
@@ -70,6 +145,7 @@ export const EntryEdit: FCForRouter<{
               className="textarea textarea-bordered w-full bg-white"
             />
           </label>
+
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
@@ -95,6 +171,7 @@ export const EntryEdit: FCForRouter<{
               )}
             </select>
           </label>
+
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Notas</span>
@@ -106,6 +183,32 @@ export const EntryEdit: FCForRouter<{
               className="textarea textarea-bordered w-full bg-white"
             />
           </label>
+
+          {entry.drawing && (
+            <img
+              src={entry.drawing}
+              alt="Dibujo"
+              className="mx-auto mt-4 w-full max-w-48 rounded-lg shadow-lg"
+            />
+          )}
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Dibujo</span>
+            </div>
+            <input
+              type="file"
+              name="drawing"
+              className="file-input file-input-bordered w-full cursor-pointer bg-white"
+            />
+          </label>
+
+          <Recorder
+            name="pronunciation"
+            size="sm"
+            defaultValue={entry.pronunciation}
+            className="mt-8"
+          />
           <SaveButton />
         </Form>
       ) : (
