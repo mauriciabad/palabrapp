@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import { DrawingInput } from '../../components/DrawingInput'
 
 export const StepDraw: FC<{
   setStepValidity: (enabled: boolean) => void
@@ -15,6 +16,8 @@ export const StepDraw: FC<{
           className="file-input file-input-bordered w-full cursor-pointer bg-white"
         />
       </label>
+
+      <DrawingInput className="mt-4" />
     </>
   )
 }
