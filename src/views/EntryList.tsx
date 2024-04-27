@@ -1,10 +1,11 @@
-import { FC } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { Entry } from '../components/Entry'
-import { IconPlus } from '@tabler/icons-react'
+import { IconPlus, IconSearch } from '@tabler/icons-react'
 import { Link, useLoaderData } from 'react-router-dom'
 import { FCForRouter, LoaderData } from '../types/loaders'
 import { selectEntryFullInfo } from '../types/entries'
 import { supabase } from '../supabase'
+import { containsIgnoreCaseAndAccents, normalize } from '../utils/strings'
 
 const loader = async () => {
   const { data: entries } = await supabase
@@ -16,16 +17,61 @@ const loader = async () => {
 
 export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
   const { entries } = useLoaderData() as LoaderData<typeof loader>
+  const [search, setSearch] = useState<string>('')
+
+  const filteredEntries = useMemo(() => {
+    if (!entries) return null
+    if (!search) return entries
+
+    return entries
+      .filter(
+        (entry) =>
+          containsIgnoreCaseAndAccents(entry.word, search) ||
+          containsIgnoreCaseAndAccents(entry.notes ?? '', search) ||
+          containsIgnoreCaseAndAccents(entry.sentence, search),
+      )
+      .sort((a, b) => {
+        // First sort if word starts with search
+        if (normalize(a.word).startsWith(normalize(search))) return -1
+        if (normalize(b.word).startsWith(normalize(search))) return 1
+
+        // Then sort if word contains search
+        if (containsIgnoreCaseAndAccents(a.word, search)) return -1
+        if (containsIgnoreCaseAndAccents(b.word, search)) return 1
+
+        // Then sort by notes
+        if (containsIgnoreCaseAndAccents(a.notes ?? '', search)) return -1
+        if (containsIgnoreCaseAndAccents(b.notes ?? '', search)) return 1
+
+        // Finally sort by sentence
+        if (containsIgnoreCaseAndAccents(a.sentence, search)) return -1
+        if (containsIgnoreCaseAndAccents(b.sentence, search)) return 1
+        return 0
+      })
+  }, [entries, search])
 
   return (
     <div className="pb-20">
       <h1 className="mb-4 text-center text-xl font-bold">Mis palabras</h1>
 
+      <label className="input input-bordered flex items-center gap-2 bg-white">
+        <input
+          type="text"
+          className="grow"
+          placeholder="Buscar"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value)
+          }}
+        />
+        <IconSearch />
+      </label>
+
       <CreateButton />
 
-      {entries ? (
+      {filteredEntries?.length ? (
         <ul className="mt-4 space-y-4">
-          {entries.map((entry) => (
+          {filteredEntries.map((entry) => (
             <Link
               key={entry.id}
               to={`/palabras/${entry.id}/editar`}
@@ -36,7 +82,9 @@ export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
           ))}
         </ul>
       ) : (
-        <p className="mt-4 text-center">No hay entradas</p>
+        <p className="mt-8 text-center italic text-stone-600">
+          {search ? 'Ningún resultado' : 'No has añadido ninguna palabra aún'}
+        </p>
       )}
     </div>
   )

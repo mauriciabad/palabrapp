@@ -1,8 +1,8 @@
 # TO DO
 
 - [ ] Search
-  - [ ] By name
-  - [ ] By notes and sentence, show end
+  - [x] By name
+  - [x] By notes and sentence, show end
   - [ ] By date
 - [x] Delete entry
 - [x] Disable submit button after send to prevent duplicates
