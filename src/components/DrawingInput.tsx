@@ -65,7 +65,7 @@ export const DrawingInput: FC<{
     >
       <input
         type="range"
-        className="range w-full max-w-[320px]"
+        className="range range-primary w-full max-w-[320px]"
         min="1"
         max="20"
         step="1"
