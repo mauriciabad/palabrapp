@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { supabase } from '../supabase'
 import { IconDeviceFloppy } from '@tabler/icons-react'
 import { Form, Params, redirect, useLoaderData } from 'react-router-dom'
@@ -108,13 +108,20 @@ export const EntryEdit: FCForRouter<{
   loader: typeof loader
 }> = () => {
   const { entry, categories } = useLoaderData() as LoaderData<typeof loader>
+  const [formSubmitted, setFormSubmitted] = useState(false)
 
   return (
     <div className="pb-20">
       <h1 className="mb-4 text-center text-xl font-bold">Editar palabra</h1>
 
       {entry ? (
-        <Form method="post" encType="multipart/form-data">
+        <Form
+          method="post"
+          encType="multipart/form-data"
+          onSubmit={() => {
+            setFormSubmitted(true)
+          }}
+        >
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">
@@ -209,7 +216,7 @@ export const EntryEdit: FCForRouter<{
             defaultValue={entry.pronunciation}
             className="mt-8"
           />
-          <SaveButton />
+          <SaveButton loading={formSubmitted} />
         </Form>
       ) : (
         <p className="text-center">No existe la entrada</p>
@@ -221,11 +228,17 @@ export const EntryEdit: FCForRouter<{
 EntryEdit.loader = loader
 EntryEdit.action = action
 
-const SaveButton: FC = () => {
+const SaveButton: FC<{
+  loading: boolean
+}> = ({ loading }) => {
   return (
     <div className="fixed inset-x-0 bottom-0 z-10 ">
       <div className="mx-auto max-w-3xl p-4">
-        <button className="btn btn-primary btn-lg shadow-xl" type="submit">
+        <button
+          className="btn btn-primary btn-lg shadow-xl"
+          type="submit"
+          disabled={loading}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -235,7 +248,7 @@ const SaveButton: FC = () => {
           >
             <IconDeviceFloppy />
           </svg>
-          Guardar
+          {loading ? 'Guardando...' : 'Guardar'}
         </button>
       </div>
     </div>

@@ -102,6 +102,7 @@ export const EntryNew: FCForRouter<{
 }> = () => {
   const { categories } = useLoaderData() as LoaderData<typeof loader>
   const [currentStep, setCurrentStep] = useState(1)
+  const [formSubmitted, setFormSubmitted] = useState(false)
 
   const steps = [
     {
@@ -209,6 +210,9 @@ export const EntryNew: FCForRouter<{
             if (validSteps[currentStep]) goToNextStep()
           }
         }}
+        onSubmit={() => {
+          setFormSubmitted(true)
+        }}
       >
         {steps.map((step) => (
           <div
@@ -233,9 +237,9 @@ export const EntryNew: FCForRouter<{
             <button
               type="submit"
               className="bg-primary"
-              disabled={!validSteps[currentStep]}
+              disabled={!validSteps[currentStep] || formSubmitted}
             >
-              Guardar
+              {formSubmitted ? 'Guardando...' : 'Guardar'}
             </button>
           ) : (
             <button
