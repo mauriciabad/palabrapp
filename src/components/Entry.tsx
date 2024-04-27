@@ -24,7 +24,11 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
           )}
           <div className="flex-1">
             <p className="text-lg font-bold">{entry.word}</p>
-            <p className="text-pretty italic">{entry.sentence}</p>
+            <p className="text-pretty italic">
+              <span className="text-stone-400">&laquo;</span>
+              {entry.sentence}
+              <span className="text-stone-400">&raquo;</span>
+            </p>
             {entry.categories && (
               <div>
                 <span className="leading-1 badge h-auto text-balance">
