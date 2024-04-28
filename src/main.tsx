@@ -7,6 +7,7 @@ import { EntryEdit } from './views/EntryEdit.tsx'
 import { EntryList } from './views/EntryList.tsx'
 import { EntryView } from './views/EntryView.tsx'
 import { EntryNew } from './views/entry-new/EntryNew.tsx'
+import ErrorPage from './error-page.tsx'
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('No root element found')
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: '',

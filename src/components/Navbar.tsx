@@ -16,7 +16,12 @@ export const Navbar: FC = () => {
     <div className="navbar bg-base-100">
       <div className="flex-1">
         <Link className="btn btn-ghost text-xl" to="/">
-          📚 PalabrApp
+          <img
+            src="/logo.png"
+            alt="PalabrApp"
+            aria-label="PalabrApp"
+            className="h-12"
+          />
         </Link>
       </div>
       {user && (
@@ -31,7 +36,7 @@ export const Navbar: FC = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-white p-2 shadow"
+              className="menu dropdown-content menu-sm z-[100] mt-3 w-52 rounded-box bg-white p-2 shadow"
             >
               <li>
                 <button
