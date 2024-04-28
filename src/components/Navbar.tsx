@@ -1,7 +1,7 @@
 import { IconHomePlus, IconMenu2 } from '@tabler/icons-react'
 import { FC, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAddToHomescreenPrompt } from '../hooks/useAddToHomescreenPRompt'
+import { useAddToHomescreenPrompt } from '../hooks/useAddToHomescreenPrompt'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../supabase'
 
