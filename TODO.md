@@ -10,7 +10,7 @@
 - [x] Canvas in draw step
 - [ ] Search images in google or generate with AI
 - [x] Display example sectence with quotes
-- [ ] Related words step
+- [x] Related words step
 - [ ] BUG: Edit image not working
 - [ ] BUG: Edit audio not working
 - [x] BUG: Audio cick in edit doesn't stop recording
