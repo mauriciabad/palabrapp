@@ -1,6 +1,7 @@
-import { IconMenu2 } from '@tabler/icons-react'
-import { FC } from 'react'
+import { IconHomePlus, IconMenu2 } from '@tabler/icons-react'
+import { FC, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAddToHomescreenPrompt } from '../hooks/useAddToHomescreenPRompt'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../supabase'
 
@@ -11,6 +12,12 @@ async function signOut() {
 
 export const Navbar: FC = () => {
   const { user } = useAuth()
+  const [prompt, promptToInstall] = useAddToHomescreenPrompt()
+  const [isVisible, setVisibleState] = useState(false)
+
+  useEffect(() => {
+    if (prompt) setVisibleState(true)
+  }, [prompt])
 
   return (
     <div className="navbar bg-base-100">
@@ -26,6 +33,18 @@ export const Navbar: FC = () => {
       </div>
       {user && (
         <div className="flex-none gap-2">
+          {isVisible && (
+            <button
+              className="btn btn-neutral btn-sm"
+              onClick={() => {
+                setVisibleState(false)
+                promptToInstall()
+              }}
+            >
+              <IconHomePlus />
+              Instalar
+            </button>
+          )}
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
