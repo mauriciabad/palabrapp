@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { cn } from '../utils/cn'
 import { IconMicrophone } from '@tabler/icons-react'
 
+const MIN_RECORDING_TIME = 500
+
 export const Recorder: FC<{
   name: string
   size?: 'sm' | 'lg'
@@ -13,6 +15,9 @@ export const Recorder: FC<{
   const [record, setRecord] = useState<Blob | null>(null)
   const { isRecording, stop, start } = useVoiceRecorder(setRecord)
   const pronunciationInput = useRef<HTMLInputElement>(null)
+  const [recordingStart, setRecordingStart] = useState<number | null>(null)
+  const [showhelp, setShowHelp] = useState(false)
+
   useEffect(() => {
     const container = new DataTransfer()
     if (record) {
@@ -31,6 +36,20 @@ export const Recorder: FC<{
     }
   }, [record, pronunciationInput])
 
+  useEffect(() => {
+    if (isRecording) {
+      setShowHelp(false)
+      setRecordingStart(Date.now())
+    } else if (
+      recordingStart &&
+      Date.now() - recordingStart < MIN_RECORDING_TIME
+    ) {
+      setShowHelp(true)
+      setRecord(null)
+      setRecordingStart(null)
+    }
+  }, [isRecording, recordingStart])
+
   return (
     <div
       className={cn(
@@ -42,47 +61,56 @@ export const Recorder: FC<{
         className,
       )}
     >
-      <div>
+      <div className="flex flex-col items-center">
         <input
           type="file"
           name={name}
           ref={pronunciationInput}
           className="hidden"
         />
-        <button
-          type="button"
-          onMouseDown={() => {
-            void start()
-          }}
-          onMouseUp={() => {
-            stop()
-          }}
-          onTouchStart={() => {
-            void start()
-          }}
-          onTouchEnd={() => {
-            stop()
-          }}
-          onContextMenu={(e) => {
-            e.preventDefault()
-          }}
+        <div
+          data-tip="Manten pulsado para grabar"
           className={cn(
-            'btn btn-circle btn-primary btn-lg relative',
-            isRecording && 'btn-error',
-            'before:absolute before:inset-0 before:-z-10 before:animate-ping before:rounded-full before:bg-error',
-            !isRecording && 'before:hidden',
-            'mx-auto flex',
-            {
-              'h-16 w-16': size === 'sm',
-              'h-32 w-32': size === 'lg',
-            },
+            'tooltip',
+            showhelp ? 'tooltip-open' : 'before:hidden after:hidden',
           )}
         >
-          <IconMicrophone
-            size={size === 'lg' ? 24 * 3 : 24 * 1}
-            stroke={size === 'lg' ? 4 / 3 : 6 / 3}
-          />
-        </button>
+          <button
+            type="button"
+            onMouseDown={() => {
+              void start()
+            }}
+            onMouseUp={() => {
+              stop()
+              setTimeout(stop, MIN_RECORDING_TIME)
+            }}
+            onTouchStart={() => {
+              void start()
+            }}
+            onTouchEnd={() => {
+              stop()
+              setTimeout(stop, MIN_RECORDING_TIME)
+            }}
+            onContextMenu={(e) => {
+              e.preventDefault()
+            }}
+            className={cn(
+              'btn btn-circle btn-primary btn-lg relative',
+              isRecording && 'btn-error',
+              'before:absolute before:inset-0 before:-z-10 before:animate-ping before:rounded-full before:bg-error',
+              !isRecording && 'before:hidden',
+              {
+                'h-16 w-16': size === 'sm',
+                'h-32 w-32': size === 'lg',
+              },
+            )}
+          >
+            <IconMicrophone
+              size={size === 'lg' ? 24 * 3 : 24 * 1}
+              stroke={size === 'lg' ? 4 / 3 : 6 / 3}
+            />
+          </button>
+        </div>
         {size === 'lg' && (
           <p className="mt-4 text-center text-sm text-stone-500">
             Manten presionado el botón para grabar.
