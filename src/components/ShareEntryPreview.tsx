@@ -45,7 +45,8 @@ export const ShareEntryPreview: FC<{
           .join('\n'),
       }
 
-      if (navigator.canShare(shareData)) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (navigator.share && navigator.canShare?.(shareData)) {
         await navigator.share(shareData)
       } else {
         const link = document.createElement('a')
