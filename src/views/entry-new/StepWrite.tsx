@@ -27,6 +27,7 @@ export const StepWrite: FC<{
           onChange={(e) => {
             setWord(e.target.value)
           }}
+          autoFocus
         />
       </label>
     </>

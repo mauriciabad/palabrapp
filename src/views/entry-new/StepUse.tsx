@@ -25,6 +25,7 @@ export const StepUse: FC<{
           onChange={(e) => {
             setSentence(e.target.value)
           }}
+          autoFocus
         />
       </label>
 
