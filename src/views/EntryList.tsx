@@ -1,10 +1,10 @@
-import { FC, useMemo, useState } from 'react'
-import { Entry } from '../components/Entry'
 import { IconPlus, IconSearch } from '@tabler/icons-react'
+import { FC, useMemo, useState } from 'react'
 import { Link, useLoaderData } from 'react-router-dom'
-import { FCForRouter, LoaderData } from '../types/loaders'
-import { selectEntryFullInfo } from '../types/entries'
+import { Entry } from '../components/Entry'
 import { supabase } from '../supabase'
+import { selectEntryFullInfo } from '../types/entries'
+import { FCForRouter, LoaderData } from '../types/loaders'
 import { containsIgnoreCaseAndAccents, normalize } from '../utils/strings'
 
 const loader = async () => {

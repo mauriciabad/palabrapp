@@ -11,12 +11,14 @@ import {
 import { FCForRouter, LoaderData } from '../types/loaders'
 import { Recorder } from '../components/Recorder'
 import { getFileExtension } from '../utils/storage'
+import { DownloadEntryPreview } from '../components/DownloadEntryPreview'
+import { selectEntryFullInfo } from '../types/entries'
 
 const loader = async ({ params }: { params: Params<'id'> }) => {
   if (!params.id) return { entry: undefined }
   const { data: entry } = await supabase
     .from('entries')
-    .select()
+    .select(selectEntryFullInfo)
     .eq('id', params.id)
     .single()
   const { data: categories } = await supabase.from('categories').select()
@@ -225,7 +227,8 @@ export const EntryEdit: FCForRouter<{
             />
             <SaveButton loading={formSubmitted} />
           </Form>
-          <div className="mt-8 flex justify-end">
+          <div className="mt-8 flex justify-between">
+            <DownloadEntryPreview entry={entry} className="btn-primary" />
             <DeleteButton entryId={entry.id} />
           </div>
         </>
