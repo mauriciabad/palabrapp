@@ -1,5 +1,5 @@
-import { IconDeviceFloppy, IconTrash } from '@tabler/icons-react'
-import { FC, useState } from 'react'
+import { IconBrush, IconDeviceFloppy, IconTrash } from '@tabler/icons-react'
+import { FC, useRef, useState } from 'react'
 import {
   Form,
   Params,
@@ -8,11 +8,15 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import { DownloadEntryPreview } from '../components/DownloadEntryPreview'
+import { DrawingInputRef } from '../components/DrawingInput'
 import { Recorder } from '../components/Recorder'
 import { supabase } from '../supabase'
 import { selectEntryFullInfo } from '../types/entries'
 import { FCForRouter, LoaderData } from '../types/loaders'
+import { cn } from '../utils/cn'
 import { getFileExtension } from '../utils/storage'
+import { addTimeToUrl } from '../utils/strings'
+import { StepDraw } from './entry-new/StepDraw'
 
 const loader = async ({ params }: { params: Params<'id'> }) => {
   if (!params.id) return { entry: undefined }
@@ -56,17 +60,26 @@ const action = async ({
 
   // --- Drawing ---
 
-  const drawingFile = updates.drawing
-  if (drawingFile && drawingFile instanceof File && drawingFile.size > 0) {
-    const fileExtension = getFileExtension(drawingFile.name)
+  const drawingPhotoFile =
+    updates.drawingPhoto &&
+    updates.drawingPhoto instanceof File &&
+    updates.drawingPhoto.size > 0
+      ? updates.drawingPhoto
+      : null
+  const drawingSvgFile = updates.drawingSvg
+    ? new File([String(updates.drawingSvg)], `drawing-${entryId}.svg`, {
+        type: 'image/svg+xml',
+      })
+    : null
+  const drawingUploadFile = drawingSvgFile ?? drawingPhotoFile
+  if (drawingUploadFile) {
+    const fileExtension = getFileExtension(drawingUploadFile.name)
     const { data: drawingData, error: drawingError } = await supabase.storage
       .from('main')
       .upload(
         `private/${userId}/drawing-${entryId}.${fileExtension}`,
-        drawingFile,
-        {
-          upsert: true,
-        },
+        drawingUploadFile,
+        { upsert: true },
       )
     if (drawingError) throw new Error(drawingError.message)
     const { data: uploadedDrawing } = supabase.storage
@@ -118,6 +131,7 @@ export const EntryEdit: FCForRouter<{
 }> = () => {
   const { entry, categories } = useLoaderData() as LoaderData<typeof loader>
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [hideDrawing, setHideDrawing] = useState(false)
 
   return (
     <div className="pb-20">
@@ -218,24 +232,22 @@ export const EntryEdit: FCForRouter<{
               />
             </label>
 
-            {entry.drawing && (
+            {entry.drawing && !hideDrawing && (
               <img
-                src={entry.drawing}
+                src={addTimeToUrl(entry.drawing)}
                 alt="Dibujo"
-                className="mx-auto mt-4 w-full max-w-48 rounded-lg shadow-lg"
+                className="mx-auto mt-4 w-full max-w-48 rounded-lg bg-white shadow-lg"
               />
             )}
 
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text">Dibujo</span>
-              </div>
-              <input
-                type="file"
-                name="drawing"
-                className="file-input file-input-bordered w-full cursor-pointer bg-white"
+            <div className="mt-8 flex justify-center">
+              <EditDrawingDialog
+                onOpen={() => {
+                  setHideDrawing(true)
+                }}
+                hasBeenOpened={hideDrawing}
               />
-            </label>
+            </div>
 
             <Recorder
               name="pronunciation"
@@ -327,6 +339,82 @@ const DeleteButton: FC<{ entryId: number }> = ({ entryId }) => {
           <button>Cerrar</button>
         </form>
       </dialog>
+    </>
+  )
+}
+
+const EditDrawingDialog: FC<{
+  className?: string
+  onOpen?: () => void
+  hasBeenOpened?: boolean
+}> = ({ className, onOpen, hasBeenOpened }) => {
+  const drawStepRef = useRef<DrawingInputRef>(null)
+
+  return (
+    <>
+      <label
+        htmlFor="edit-drawing-modal"
+        className={cn('btn', className)}
+        onClick={onOpen}
+      >
+        <IconBrush />
+        {hasBeenOpened ? 'Volver a editar dibujo' : 'Cambiar dibujo'}
+      </label>
+
+      <input type="checkbox" id="edit-drawing-modal" className="modal-toggle" />
+
+      <div id="edit-drawing-modal" className="modal" role="dialog">
+        <div className="modal-box">
+          <label
+            htmlFor="edit-drawing-modal"
+            className="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
+            onClick={() => {
+              drawStepRef.current?.reset()
+            }}
+          >
+            ✕
+          </label>
+
+          <StepDraw
+            ref={drawStepRef}
+            setStepValidity={() => {
+              // Do nothing
+            }}
+          />
+
+          <div className="modal-action">
+            <label
+              className="btn"
+              htmlFor="edit-drawing-modal"
+              onClick={() => {
+                drawStepRef.current?.reset()
+              }}
+            >
+              Cancelar
+            </label>
+
+            <label
+              htmlFor="edit-drawing-modal"
+              className="btn btn-primary"
+              onClick={() => {
+                void drawStepRef.current?.setInputValue()
+              }}
+            >
+              <IconDeviceFloppy />
+              Guardar
+            </label>
+          </div>
+        </div>
+        <label
+          className="modal-backdrop"
+          htmlFor="edit-drawing-modal"
+          onClick={() => {
+            drawStepRef.current?.reset()
+          }}
+        >
+          Cerrar
+        </label>
+      </div>
     </>
   )
 }

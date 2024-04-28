@@ -6,6 +6,7 @@ import {
 import { FC } from 'react'
 import { useAudio } from '../hooks/useAudio'
 import { EntryFullInfo } from '../types/entries'
+import { addTimeToUrl } from '../utils/strings'
 
 export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
   const { playing, toggle } = useAudio(entry.pronunciation)
@@ -17,7 +18,7 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
           <div className="flex items-center justify-between gap-4 self-stretch xs2:flex-col xs2:justify-start xs2:self-center">
             {entry.drawing ? (
               <img
-                src={entry.drawing}
+                src={addTimeToUrl(entry.drawing)}
                 alt="Dibujo"
                 className="h-auto w-20 rounded"
               />

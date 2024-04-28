@@ -1,6 +1,7 @@
 import { forwardRef } from 'react'
 import { EntryFullInfo } from '../types/entries'
 import { cn } from '../utils/cn'
+import { addTimeToUrl } from '../utils/strings'
 
 export const EntryPreview = forwardRef<
   HTMLDivElement,
@@ -16,7 +17,7 @@ export const EntryPreview = forwardRef<
     >
       {entry.drawing && (
         <img
-          src={entry.drawing}
+          src={addTimeToUrl(entry.drawing)}
           alt="Dibujo"
           className="mx-auto h-auto w-full max-w-[200px] rounded"
         />

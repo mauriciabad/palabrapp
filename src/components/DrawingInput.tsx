@@ -21,6 +21,7 @@ import { cn } from '../utils/cn'
 
 export interface DrawingInputRef {
   setInputValue: () => Promise<void>
+  reset: () => void
 }
 
 export const DrawingInput = forwardRef<
@@ -48,6 +49,11 @@ export const DrawingInput = forwardRef<
 
         const svg = await canvasRef.current.exportSvg()
         inputRef.current.value = svg
+      },
+      reset: () => {
+        if (!canvasRef.current) throw new Error('Canvas not found')
+
+        canvasRef.current.resetCanvas()
       },
     }),
     [],

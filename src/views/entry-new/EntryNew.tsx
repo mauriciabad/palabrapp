@@ -48,7 +48,7 @@ const action = async ({ request }: { request: Request }) => {
     updates.drawingPhoto.size > 0
       ? updates.drawingPhoto
       : null
-  const drawingSvgFile = String(updates.drawingSvg)
+  const drawingSvgFile = updates.drawingSvg
     ? new File([String(updates.drawingSvg)], `drawing-${entryId}.svg`, {
         type: 'image/svg+xml',
       })
