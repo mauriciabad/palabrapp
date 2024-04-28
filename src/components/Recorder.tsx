@@ -2,6 +2,7 @@ import { IconMicrophone } from '@tabler/icons-react'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useVoiceRecorder } from 'use-voice-recorder'
 import { cn } from '../utils/cn'
+import { addTimeToUrl } from '../utils/strings'
 
 const MIN_RECORDING_TIME = 500
 
@@ -129,7 +130,7 @@ export const Recorder: FC<{
       ) : (
         defaultValue && (
           <audio
-            src={defaultValue}
+            src={addTimeToUrl(defaultValue)}
             controls
             preload={'metadata'}
             className={cn('w-full')}

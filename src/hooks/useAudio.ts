@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
+import { addTimeToUrl } from '../utils/strings'
 
 export const useAudio = (url?: string | null) => {
-  const [audio] = useState(url ? new Audio(url) : undefined)
+  const [audio] = useState(url ? new Audio(addTimeToUrl(url)) : undefined)
   const [playing, setPlaying] = useState(false)
 
   const toggle = () => {
