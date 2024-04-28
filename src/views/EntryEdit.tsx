@@ -174,7 +174,6 @@ export const EntryEdit: FCForRouter<{
               </div>
               <textarea
                 name="related_entries"
-                required
                 defaultValue={entry.related_entries ?? ''}
                 placeholder="Escribe aquí"
                 className="textarea textarea-bordered w-full bg-white"
