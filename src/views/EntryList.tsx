@@ -12,24 +12,32 @@ const loader = async () => {
     .from('entries')
     .select(selectEntryFullInfo)
     .order('word', { ascending: true })
-  return { entries }
+
+  const { data: categories } = await supabase.from('categories').select()
+
+  return { entries, categories }
 }
 
 export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
-  const { entries } = useLoaderData() as LoaderData<typeof loader>
+  const { entries, categories } = useLoaderData() as LoaderData<typeof loader>
   const [search, setSearch] = useState<string>('')
+  const [category, setCategory] = useState('')
 
   const filteredEntries = useMemo(() => {
     if (!entries) return null
-    if (!search) return entries
 
     return entries
-      .filter(
-        (entry) =>
+      .filter((entry) => {
+        const passFilterSearch =
+          !search ||
           containsIgnoreCaseAndAccents(entry.word, search) ||
           containsIgnoreCaseAndAccents(entry.notes ?? '', search) ||
-          containsIgnoreCaseAndAccents(entry.sentence, search),
-      )
+          containsIgnoreCaseAndAccents(entry.sentence, search)
+        const passFilterCategory =
+          !category || entry.category_id === Number(category)
+
+        return passFilterSearch && passFilterCategory
+      })
       .sort((a, b) => {
         // First sort if word starts with search
         if (normalize(a.word).startsWith(normalize(search))) return -1
@@ -48,7 +56,7 @@ export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
         if (containsIgnoreCaseAndAccents(b.sentence, search)) return 1
         return 0
       })
-  }, [entries, search])
+  }, [entries, search, category])
 
   return (
     <div className="pb-20">
@@ -66,6 +74,28 @@ export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
         />
         <IconSearch />
       </label>
+
+      <div className="mt-1 grid">
+        <select
+          className="select select-bordered select-sm w-full bg-white"
+          name="category_id"
+          required
+          value={category}
+          onChange={(e) => {
+            setCategory(e.target.value)
+          }}
+        >
+          <option disabled value="">
+            Categoría
+          </option>
+          <option value="">Todas las categorías</option>
+          {categories?.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.icon} {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <CreateButton />
 
