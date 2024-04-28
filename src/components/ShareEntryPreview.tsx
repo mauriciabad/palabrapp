@@ -23,9 +23,11 @@ export const ShareEntryPreview: FC<{
     onSuccess: async (data) => {
       if (!data) throw new Error('No data')
 
+      const fileName = `palabrapp-${entry.word}-${Date.now()}.png`
+
       const shareData = {
         files: [
-          new File([data], `palabrapp-${entry.word}-${Date.now()}.png`, {
+          new File([data], fileName, {
             type: 'image/png',
           }),
         ],
@@ -42,7 +44,18 @@ export const ShareEntryPreview: FC<{
           .filter(Boolean)
           .join('\n'),
       }
-      await navigator.share(shareData)
+
+      if (navigator.canShare(shareData)) {
+        await navigator.share(shareData)
+      } else {
+        const link = document.createElement('a')
+        link.download = fileName
+        link.href = URL.createObjectURL(data)
+        link.click()
+        setTimeout(() => {
+          URL.revokeObjectURL(link.href)
+        }, 0)
+      }
     },
   })
 
