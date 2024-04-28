@@ -10,18 +10,31 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
   return (
     <li className="card border bg-white shadow-xl">
       <div className="card-body p-4">
-        <div className="flex items-center gap-4">
-          {entry.drawing ? (
-            <img
-              src={entry.drawing}
-              alt="Dibujo"
-              className="h-auto w-20 rounded"
-            />
-          ) : (
-            <div className="flex aspect-square w-20 items-center justify-center rounded bg-base-200">
-              <IconWriting size={24} />
-            </div>
-          )}
+        <div className="flex items-start gap-4">
+          <div className="flex flex-col items-center justify-start gap-1">
+            {entry.drawing ? (
+              <img
+                src={entry.drawing}
+                alt="Dibujo"
+                className="h-auto w-20 rounded"
+              />
+            ) : (
+              <div className="flex aspect-square w-20 items-center justify-center rounded bg-base-200">
+                <IconWriting size={24} />
+              </div>
+            )}
+            {entry.pronunciation && (
+              <button
+                className="xs2:hidden btn btn-circle btn-outline flex"
+                onClick={(e) => {
+                  e.preventDefault()
+                  toggle()
+                }}
+              >
+                {playing ? <IconPlayerPause /> : <IconPlayerPlay />}
+              </button>
+            )}
+          </div>
           <div className="flex-1">
             <p className="text-lg font-bold">{entry.word}</p>
             <p className="text-pretty italic">
@@ -40,7 +53,7 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
           </div>
           {entry.pronunciation && (
             <button
-              className="btn btn-circle btn-outline"
+              className="xs2:flex btn btn-circle btn-outline hidden self-center"
               onClick={(e) => {
                 e.preventDefault()
                 toggle()
