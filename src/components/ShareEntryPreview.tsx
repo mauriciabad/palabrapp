@@ -29,8 +29,7 @@ export const ShareEntryPreview: FC<{
             type: 'image/png',
           }),
         ],
-        title: 'Compartir palabra',
-        text: [
+        title: [
           `Palabra: ${entry.word}`,
           category ? `Categoría: ${category.icon} ${category.name}` : null,
           `Frase: ${entry.sentence}`,
