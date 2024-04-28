@@ -5,7 +5,7 @@ import { Entry } from '../components/Entry'
 import { supabase } from '../supabase'
 import { EntryFullInfo, selectEntryFullInfo } from '../types/entries'
 import { FCForRouter, LoaderData } from '../types/loaders'
-import { containsIgnoreCaseAndAccents, normalize } from '../utils/strings'
+import { includesNormalized, normalize } from '../utils/strings'
 
 const loader = async () => {
   const { data: entries } = await supabase
@@ -43,9 +43,10 @@ export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
       .filter((entry) => {
         const passesFilterSearch =
           !search ||
-          containsIgnoreCaseAndAccents(entry.word, search) ||
-          containsIgnoreCaseAndAccents(entry.notes ?? '', search) ||
-          containsIgnoreCaseAndAccents(entry.sentence, search)
+          includesNormalized(entry.word, search) ||
+          includesNormalized(entry.notes, search) ||
+          includesNormalized(entry.sentence, search) ||
+          includesNormalized(entry.related_entries, search)
         const passesFilterCategory =
           !category || entry.category_id === Number(category)
 
@@ -61,16 +62,20 @@ export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
         if (normalize(b.word).startsWith(normalize(search))) return 1
 
         // Then sort if word contains search
-        if (containsIgnoreCaseAndAccents(a.word, search)) return -1
-        if (containsIgnoreCaseAndAccents(b.word, search)) return 1
+        if (includesNormalized(a.word, search)) return -1
+        if (includesNormalized(b.word, search)) return 1
+
+        // Then sort by related entries
+        if (includesNormalized(a.related_entries, search)) return -1
+        if (includesNormalized(b.related_entries, search)) return 1
 
         // Then sort by notes
-        if (containsIgnoreCaseAndAccents(a.notes ?? '', search)) return -1
-        if (containsIgnoreCaseAndAccents(b.notes ?? '', search)) return 1
+        if (includesNormalized(a.notes, search)) return -1
+        if (includesNormalized(b.notes, search)) return 1
 
         // Finally sort by sentence
-        if (containsIgnoreCaseAndAccents(a.sentence, search)) return -1
-        if (containsIgnoreCaseAndAccents(b.sentence, search)) return 1
+        if (includesNormalized(a.sentence, search)) return -1
+        if (includesNormalized(b.sentence, search)) return 1
         return 0
       })
   }, [entries, search, category, dateInterval])

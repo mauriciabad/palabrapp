@@ -31,7 +31,8 @@ const action = async ({ request }: { request: Request }) => {
     .insert({
       word: String(updates.word),
       sentence: String(updates.sentence),
-      notes: String(updates.notes),
+      related_entries: String(updates.related_entries) || null,
+      notes: String(updates.notes) || null,
       category_id: Number(updates.category_id),
     })
     .select('id')

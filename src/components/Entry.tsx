@@ -10,8 +10,8 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
   return (
     <li className="card border bg-white shadow-xl">
       <div className="card-body p-4">
-        <div className="xs2:flex-row xs2:gap-4 flex flex-col items-start gap-2">
-          <div className="xs2:flex-col xs2:justify-start xs2:self-center flex items-center justify-between gap-4 self-stretch">
+        <div className="flex flex-col items-start gap-2 xs2:flex-row xs2:gap-4">
+          <div className="flex items-center justify-between gap-4 self-stretch xs2:flex-col xs2:justify-start xs2:self-center">
             {entry.drawing ? (
               <img
                 src={entry.drawing}
@@ -25,7 +25,7 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
             )}
             {entry.pronunciation && (
               <button
-                className="xs2:hidden btn btn-circle btn-outline flex"
+                className="btn btn-circle btn-outline flex xs2:hidden"
                 onClick={(e) => {
                   e.preventDefault()
                   toggle()
@@ -53,7 +53,7 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
           </div>
           {entry.pronunciation && (
             <button
-              className="xs2:flex btn btn-circle btn-outline hidden self-center"
+              className="btn btn-circle btn-outline hidden self-center xs2:flex"
               onClick={(e) => {
                 e.preventDefault()
                 toggle()
@@ -63,11 +63,13 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
             </button>
           )}
         </div>
-        {entry.notes && (
-          <p className="text-pretty border-t-2 border-base-100 pt-2 text-stone-600">
-            {entry.notes}
-          </p>
+        {(!!entry.related_entries || !!entry.notes) && (
+          <hr className="border-t-2 border-base-100" />
         )}
+        {entry.related_entries && (
+          <p className="mb-1 text-pretty italic">{entry.related_entries}</p>
+        )}
+        {entry.notes && <p className="text-pretty">{entry.notes}</p>}
       </div>
     </li>
   )

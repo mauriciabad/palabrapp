@@ -48,7 +48,8 @@ const action = async ({
     .update({
       word: String(updates.word),
       sentence: String(updates.sentence),
-      notes: String(updates.notes),
+      related_entries: String(updates.related_entries) || null,
+      notes: String(updates.notes) || null,
       category_id: Number(updates.category_id),
     })
     .eq('id', entryId)
@@ -157,6 +158,24 @@ export const EntryEdit: FCForRouter<{
                 name="sentence"
                 required
                 defaultValue={entry.sentence}
+                placeholder="Escribe aquí"
+                className="textarea textarea-bordered w-full bg-white"
+              />
+            </label>
+
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text">
+                  Palabras amigas
+                  <span className="ms-2 text-xs text-gray-500">
+                    Separadas por comas
+                  </span>
+                </span>
+              </div>
+              <textarea
+                name="related_entries"
+                required
+                defaultValue={entry.related_entries ?? ''}
                 placeholder="Escribe aquí"
                 className="textarea textarea-bordered w-full bg-white"
               />

@@ -38,11 +38,13 @@ export const EntryPreview = forwardRef<
         <span className="text-stone-400">&raquo;</span>
       </p>
 
-      {entry.notes && (
-        <p className="text-pretty border-t-2 border-base-100 pt-2 text-stone-600">
-          {entry.notes}
-        </p>
+      {(!!entry.related_entries || !!entry.notes) && (
+        <hr className="border-t-2 border-base-100" />
       )}
+      {entry.related_entries && (
+        <p className="mb-1 text-pretty italic">{entry.related_entries}</p>
+      )}
+      {entry.notes && <p className="text-pretty">{entry.notes}</p>}
 
       <img
         src="/logo.png"

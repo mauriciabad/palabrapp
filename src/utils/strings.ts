@@ -1,7 +1,8 @@
-export function containsIgnoreCaseAndAccents(
-  text: string,
+export function includesNormalized(
+  text: string | null | undefined,
   search: string,
 ): boolean {
+  if (!text) return false
   return normalize(text).includes(normalize(search))
 }
 
