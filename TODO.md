@@ -12,7 +12,7 @@
 - [x] Display example sectence with quotes
 - [x] Related words step
 - [ ] BUG: Edit image not working
-- [ ] BUG: Edit audio not working
+- [x] BUG: Edit audio not working
 - [x] BUG: Audio cick in edit doesn't stop recording
 - [ ] BUG: Open edit from url gives 404
 - [ ] BUG: After login, entries don't load

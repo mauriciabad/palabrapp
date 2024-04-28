@@ -104,7 +104,7 @@ const action = async ({ request }: { request: Request }) => {
       .eq('id', entryId)
   }
 
-  return redirect(`/palabras/${entryId}/editar`)
+  return redirect(`/palabras`)
 }
 
 export const EntryNew: FCForRouter<{
