@@ -7,7 +7,7 @@ import {
   useLoaderData,
   useNavigate,
 } from 'react-router-dom'
-import { DownloadEntryPreview } from '../components/DownloadEntryPreview'
+import { ShareEntryPreview } from '../components/ShareEntryPreview'
 import { DrawingInputRef } from '../components/DrawingInput'
 import { Recorder } from '../components/Recorder'
 import { supabase } from '../supabase'
@@ -258,7 +258,13 @@ export const EntryEdit: FCForRouter<{
             <SaveButton loading={formSubmitted} />
           </Form>
           <div className="mt-8 flex justify-between">
-            <DownloadEntryPreview entry={entry} className="btn-primary" />
+            <ShareEntryPreview
+              entry={entry}
+              className="btn-primary"
+              category={categories?.find(
+                (category) => category.id === entry.category_id,
+              )}
+            />
             <DeleteButton entryId={entry.id} />
           </div>
         </>

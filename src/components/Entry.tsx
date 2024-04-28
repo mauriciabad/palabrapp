@@ -7,6 +7,7 @@ import { FC } from 'react'
 import { useAudio } from '../hooks/useAudio'
 import { EntryFullInfo } from '../types/entries'
 import { addTimeToUrl } from '../utils/strings'
+import { ShareEntryPreview } from './ShareEntryPreview'
 
 export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
   const { playing, toggle } = useAudio(entry.pronunciation)
@@ -27,6 +28,7 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
                 <IconWriting size={24} />
               </div>
             )}
+            <div className="block flex-1 xs2:hidden" />
             {entry.pronunciation && (
               <button
                 className="btn btn-circle btn-outline flex xs2:hidden"
@@ -38,6 +40,12 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
                 {playing ? <IconPlayerPause /> : <IconPlayerPlay />}
               </button>
             )}
+            <ShareEntryPreview
+              entry={entry}
+              category={entry.categories}
+              size="sm"
+              className="btn-primary flex xs2:hidden"
+            />
           </div>
           <div className="flex-1">
             <p className="text-lg font-bold">{entry.word}</p>
@@ -55,17 +63,25 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
               </div>
             )}
           </div>
-          {entry.pronunciation && (
-            <button
-              className="btn btn-circle btn-outline hidden self-center xs2:flex"
-              onClick={(e) => {
-                e.preventDefault()
-                toggle()
-              }}
-            >
-              {playing ? <IconPlayerPause /> : <IconPlayerPlay />}
-            </button>
-          )}
+          <div className="flex flex-col-reverse items-center gap-1 self-center sm:flex-row sm:gap-4">
+            {entry.pronunciation && (
+              <button
+                className="btn btn-circle btn-outline hidden self-center xs2:flex"
+                onClick={(e) => {
+                  e.preventDefault()
+                  toggle()
+                }}
+              >
+                {playing ? <IconPlayerPause /> : <IconPlayerPlay />}
+              </button>
+            )}
+            <ShareEntryPreview
+              entry={entry}
+              category={entry.categories}
+              size="sm"
+              className="btn-primary hidden self-center xs2:flex"
+            />
+          </div>
         </div>
         {(!!entry.related_entries || !!entry.notes) && (
           <hr className="border-t-2 border-base-100" />
