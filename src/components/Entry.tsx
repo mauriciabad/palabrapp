@@ -10,8 +10,8 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
   return (
     <li className="card border bg-white shadow-xl">
       <div className="card-body p-4">
-        <div className="flex items-start gap-4">
-          <div className="flex flex-col items-center justify-start gap-1">
+        <div className="xs2:flex-row xs2:gap-4 flex flex-col items-start gap-2">
+          <div className="xs2:flex-col xs2:justify-start xs2:self-center flex items-center justify-between gap-4 self-stretch">
             {entry.drawing ? (
               <img
                 src={entry.drawing}
@@ -37,7 +37,7 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
           </div>
           <div className="flex-1">
             <p className="text-lg font-bold">{entry.word}</p>
-            <p className="text-pretty italic">
+            <p className="mb-1 text-pretty italic">
               <span className="text-stone-400">&laquo;</span>
               {entry.sentence}
               <span className="text-stone-400">&raquo;</span>
