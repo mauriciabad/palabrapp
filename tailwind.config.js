@@ -7,7 +7,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        sans: [
+          'InterVariable',
+          'Inter var',
+          'Inter',
+          ...defaultTheme.fontFamily.sans,
+        ],
       },
       screens: {
         xs: '475px',

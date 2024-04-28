@@ -8,6 +8,8 @@ import { EntryList } from './views/EntryList.tsx'
 import { EntryView } from './views/EntryView.tsx'
 import { EntryNew } from './views/entry-new/EntryNew.tsx'
 import ErrorPage from './error-page.tsx'
+import 'inter-ui/inter.css'
+import 'inter-ui/inter-variable.css'
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('No root element found')
