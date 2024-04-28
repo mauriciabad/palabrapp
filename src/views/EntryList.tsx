@@ -23,7 +23,7 @@ const dateIntervals = [
   { id: 'week', name: 'Esta semana' },
   { id: 'month', name: 'Este mes' },
   { id: 'year', name: 'Este año' },
-] as const satisfies {
+] as const satisfies readonly {
   id: string
   name: string
 }[]
