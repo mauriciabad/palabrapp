@@ -3,7 +3,7 @@ import { FC, useMemo, useState } from 'react'
 import { Link, useLoaderData } from 'react-router-dom'
 import { Entry } from '../components/Entry'
 import { supabase } from '../supabase'
-import { selectEntryFullInfo } from '../types/entries'
+import { EntryFullInfo, selectEntryFullInfo } from '../types/entries'
 import { FCForRouter, LoaderData } from '../types/loaders'
 import { containsIgnoreCaseAndAccents, normalize } from '../utils/strings'
 
@@ -18,25 +18,42 @@ const loader = async () => {
   return { entries, categories }
 }
 
+const dateIntervals = [
+  { id: 'today', name: 'Hoy' },
+  { id: 'week', name: 'Esta semana' },
+  { id: 'month', name: 'Este mes' },
+  { id: 'year', name: 'Este año' },
+] as const satisfies {
+  id: string
+  name: string
+}[]
+
+type DateInterval = (typeof dateIntervals)[number]['id']
+
 export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
   const { entries, categories } = useLoaderData() as LoaderData<typeof loader>
   const [search, setSearch] = useState<string>('')
   const [category, setCategory] = useState('')
+  const [dateInterval, setDateInterval] = useState<DateInterval | ''>('')
 
   const filteredEntries = useMemo(() => {
     if (!entries) return null
 
     return entries
       .filter((entry) => {
-        const passFilterSearch =
+        const passesFilterSearch =
           !search ||
           containsIgnoreCaseAndAccents(entry.word, search) ||
           containsIgnoreCaseAndAccents(entry.notes ?? '', search) ||
           containsIgnoreCaseAndAccents(entry.sentence, search)
-        const passFilterCategory =
+        const passesFilterCategory =
           !category || entry.category_id === Number(category)
 
-        return passFilterSearch && passFilterCategory
+        return (
+          passesFilterSearch &&
+          passesFilterCategory &&
+          passesDateInterval(entry, dateInterval || null)
+        )
       })
       .sort((a, b) => {
         // First sort if word starts with search
@@ -56,7 +73,7 @@ export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
         if (containsIgnoreCaseAndAccents(b.sentence, search)) return 1
         return 0
       })
-  }, [entries, search, category])
+  }, [entries, search, category, dateInterval])
 
   return (
     <div className="pb-20">
@@ -75,11 +92,10 @@ export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
         <IconSearch />
       </label>
 
-      <div className="mt-1 grid">
+      <div className="mt-2 grid grid-cols-2 gap-2">
         <select
           className="select select-bordered select-sm w-full bg-white"
           name="category_id"
-          required
           value={category}
           onChange={(e) => {
             setCategory(e.target.value)
@@ -92,6 +108,24 @@ export const EntryList: FCForRouter<{ loader: typeof loader }> = () => {
           {categories?.map((category) => (
             <option key={category.id} value={category.id}>
               {category.icon} {category.name}
+            </option>
+          ))}
+        </select>
+        <select
+          className="select select-bordered select-sm w-full bg-white"
+          name="date"
+          value={dateInterval}
+          onChange={(e) => {
+            setDateInterval(e.target.value as DateInterval | '')
+          }}
+        >
+          <option disabled value="">
+            Fecha de creación
+          </option>
+          <option value="">Qualquier momento</option>
+          {dateIntervals.map((dateInterval) => (
+            <option key={dateInterval.id} value={dateInterval.id}>
+              {dateInterval.name}
             </option>
           ))}
         </select>
@@ -141,4 +175,27 @@ const CreateButton: FC = () => {
       </div>
     </div>
   )
+}
+
+const DAY_IN_MS = 24 * 60 * 60 * 1000
+
+const passesDateInterval = (
+  entry: EntryFullInfo,
+  dateInterval: DateInterval | null,
+) => {
+  const date = new Date(entry.created_at)
+  const now = new Date().getTime()
+
+  switch (dateInterval) {
+    case 'today':
+      return date > new Date(now - 1 * DAY_IN_MS)
+    case 'week':
+      return date > new Date(now - 7 * DAY_IN_MS)
+    case 'month':
+      return date > new Date(now - 30 * DAY_IN_MS)
+    case 'year':
+      return date > new Date(now - 365 * DAY_IN_MS)
+    default:
+      return true
+  }
 }

@@ -1,10 +1,10 @@
 # TO DO
 
-- [ ] Search
+- [x] Search
   - [x] By name
   - [x] By notes and sentence, show end
-  - [ ] By date
-  - [ ] By categoy
+  - [x] By date
+  - [x] By categoy
 - [x] Delete entry
 - [x] Disable submit button after send to prevent duplicates
 - [x] Canvas in draw step
