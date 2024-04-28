@@ -1,14 +1,15 @@
-import { FC, ReactNode, useCallback, useState } from 'react'
-import { supabase } from '../../supabase'
+import { FC, ReactNode, useCallback, useRef, useState } from 'react'
 import { Form, redirect, useLoaderData } from 'react-router-dom'
+import { DrawingInputRef } from '../../components/DrawingInput'
+import { supabase } from '../../supabase'
 import { FCForRouter, LoaderData } from '../../types/loaders'
 import { cn } from '../../utils/cn'
-import { StepWrite } from './StepWrite'
-import { StepSay } from './StepSay'
-import { StepDraw } from './StepDraw'
-import { StepUse } from './StepUse'
-import { StepClasify } from './StepClasify'
 import { getFileExtension } from '../../utils/storage'
+import { StepClasify } from './StepClasify'
+import { StepDraw } from './StepDraw'
+import { StepSay } from './StepSay'
+import { StepUse } from './StepUse'
+import { StepWrite } from './StepWrite'
 
 const loader = async () => {
   const { data: categories } = await supabase.from('categories').select()
@@ -40,17 +41,26 @@ const action = async ({ request }: { request: Request }) => {
 
   // --- Drawing ---
 
-  const drawingFile = updates.drawing
-  if (drawingFile && drawingFile instanceof File && drawingFile.size > 0) {
-    const fileExtension = getFileExtension(drawingFile.name)
+  const drawingPhotoFile =
+    updates.drawingPhoto &&
+    updates.drawingPhoto instanceof File &&
+    updates.drawingPhoto.size > 0
+      ? updates.drawingPhoto
+      : null
+  const drawingSvgFile = String(updates.drawingSvg)
+    ? new File([String(updates.drawingSvg)], `drawing-${entryId}.svg`, {
+        type: 'image/svg+xml',
+      })
+    : null
+  const drawingUploadFile = drawingSvgFile ?? drawingPhotoFile
+  if (drawingUploadFile) {
+    const fileExtension = getFileExtension(drawingUploadFile.name)
     const { data: drawingData, error: drawingError } = await supabase.storage
       .from('main')
       .upload(
         `private/${userId}/drawing-${entryId}.${fileExtension}`,
-        drawingFile,
-        {
-          upsert: true,
-        },
+        drawingUploadFile,
+        { upsert: true },
       )
     if (drawingError) throw new Error(drawingError.message)
     const { data: uploadedDrawing } = supabase.storage
@@ -103,6 +113,7 @@ export const EntryNew: FCForRouter<{
   const { categories } = useLoaderData() as LoaderData<typeof loader>
   const [currentStep, setCurrentStep] = useState(1)
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const drawStepRef = useRef<DrawingInputRef>(null)
 
   const steps = [
     {
@@ -141,6 +152,7 @@ export const EntryNew: FCForRouter<{
           setStepValidity={useCallback((value) => {
             setValidStep(3, value)
           }, [])}
+          ref={drawStepRef}
         />
       ),
     },
@@ -183,6 +195,9 @@ export const EntryNew: FCForRouter<{
   }
 
   const goToNextStep = () => {
+    if (currentStep === 3) {
+      void drawStepRef.current?.setInputValue()
+    }
     setCurrentStep((prev) => Math.min(prev + 1, steps.length))
   }
   const goToPrevStep = () => {

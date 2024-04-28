@@ -1,9 +1,3 @@
-import { ChangeEvent, FC, useRef, useState } from 'react'
-import {
-  ReactSketchCanvas,
-  type ReactSketchCanvasRef,
-} from 'react-sketch-canvas'
-import { cn } from '../utils/cn'
 import {
   IconArrowBackUp,
   IconArrowForwardUp,
@@ -12,11 +6,53 @@ import {
   IconPencil,
   IconRestore,
 } from '@tabler/icons-react'
+import {
+  ChangeEvent,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
+import {
+  ReactSketchCanvas,
+  type ReactSketchCanvasRef,
+} from 'react-sketch-canvas'
+import { cn } from '../utils/cn'
 
-export const DrawingInput: FC<{
-  className?: string
-}> = ({ className }) => {
+export interface DrawingInputRef {
+  setInputValue: () => Promise<void>
+}
+
+export const DrawingInput = forwardRef<
+  DrawingInputRef,
+  {
+    className?: string
+    name: string
+  }
+>(function DrawingInput({ className, name }, outerRef) {
   const canvasRef = useRef<ReactSketchCanvasRef>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useImperativeHandle(
+    outerRef,
+    () => ({
+      setInputValue: async () => {
+        if (!canvasRef.current || !inputRef.current) {
+          throw new Error('Canvas or input not found')
+        }
+
+        if ((await canvasRef.current.getSketchingTime()) === 0) {
+          inputRef.current.value = ''
+          return
+        }
+
+        const svg = await canvasRef.current.exportSvg()
+        inputRef.current.value = svg
+      },
+    }),
+    [],
+  )
+
   const [eraseMode, setEraseMode] = useState(false)
   const [strokeColor, setStrokeColor] = useState('#000000')
   const [strokeWidth, setStrokeWidth] = useState(5)
@@ -140,7 +176,10 @@ export const DrawingInput: FC<{
         eraserWidth={eraserWidth}
         width="300px"
         height="300px"
+        withTimestamp
       />
+
+      <input type="hidden" name={name} ref={inputRef} />
     </div>
   )
-}
+})
