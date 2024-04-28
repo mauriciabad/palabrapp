@@ -56,7 +56,7 @@ export const DrawingInput = forwardRef<
   const [eraseMode, setEraseMode] = useState(false)
   const [strokeColor, setStrokeColor] = useState('#000000')
   const [strokeWidth, setStrokeWidth] = useState(5)
-  const [eraserWidth, setEraserWidth] = useState(10)
+  const [eraserWidth, setEraserWidth] = useState(20)
 
   const handleStrokeWidthChange = (event: ChangeEvent<HTMLInputElement>) => {
     setStrokeWidth(Number(event.target.value))
@@ -101,16 +101,16 @@ export const DrawingInput = forwardRef<
     >
       <input
         type="range"
-        className="range range-primary w-full max-w-[320px]"
+        className="range range-primary range-sm w-full max-w-[310px]"
         min="1"
-        max="20"
+        max="30"
         step="1"
         value={eraseMode ? eraserWidth : strokeWidth}
         onChange={eraseMode ? handleEraserWidthChange : handleStrokeWidthChange}
       />
 
       <div className="flex items-center justify-between gap-2">
-        <div className="relative h-12 w-12 overflow-hidden rounded-full">
+        <div className="relative h-10 w-10 overflow-hidden rounded-full">
           <input
             title="Color"
             className="h-[200%] w-[200%] -translate-x-1/4 -translate-y-1/4 transform-cpu cursor-pointer appearance-none border-none bg-transparent"
@@ -123,11 +123,11 @@ export const DrawingInput = forwardRef<
           </div>
         </div>
 
-        <div className="join">
+        <div className="tabs-boxed tabs">
           <button
             type="button"
-            className={cn('btn btn-circle join-item', {
-              'btn-primary': !eraseMode,
+            className={cn('tab', {
+              'tab-active': !eraseMode,
             })}
             onClick={handlePenClick}
           >
@@ -135,8 +135,8 @@ export const DrawingInput = forwardRef<
           </button>
           <button
             type="button"
-            className={cn('btn btn-circle join-item', {
-              'btn-primary': eraseMode,
+            className={cn('tab', {
+              'tab-active': eraseMode,
             })}
             onClick={handleEraserClick}
           >
@@ -146,7 +146,7 @@ export const DrawingInput = forwardRef<
 
         <button
           type="button"
-          className="btn btn-circle"
+          className="btn btn-circle btn-sm size-10"
           onClick={handleResetClick}
         >
           <IconRestore />
@@ -154,14 +154,14 @@ export const DrawingInput = forwardRef<
 
         <button
           type="button"
-          className="btn btn-circle"
+          className="btn btn-circle btn-sm size-10"
           onClick={handleUndoClick}
         >
           <IconArrowBackUp />
         </button>
         <button
           type="button"
-          className="btn btn-circle"
+          className="btn btn-circle btn-sm size-10"
           onClick={handleRedoClick}
         >
           <IconArrowForwardUp />
