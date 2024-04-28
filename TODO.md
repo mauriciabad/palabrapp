@@ -17,3 +17,4 @@
 - [ ] BUG: Open edit from url gives 404
 - [ ] BUG: After login, entries don't load
 - [x] Export as png
+- [x] Favicon
