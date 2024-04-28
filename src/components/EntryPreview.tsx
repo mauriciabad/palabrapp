@@ -18,7 +18,7 @@ export const EntryPreview = forwardRef<
       {entry.drawing && (
         <img
           src={addTimeToUrl(entry.drawing)}
-          alt="Dibujo"
+          alt=""
           className="mx-auto h-auto w-full max-w-[200px] rounded"
         />
       )}
