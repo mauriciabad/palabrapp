@@ -1,8 +1,11 @@
+import {
+  IconPlayerPause,
+  IconPlayerPlay,
+  IconWriting,
+} from '@tabler/icons-react'
 import { FC } from 'react'
-import { EntryFullInfo } from '../types/entries'
-import { IconPlayerPlay, IconWriting } from '@tabler/icons-react'
 import { useAudio } from '../hooks/useAudio'
-import { IconPlayerPause } from '@tabler/icons-react'
+import { EntryFullInfo } from '../types/entries'
 
 export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
   const { playing, toggle } = useAudio(entry.pronunciation)

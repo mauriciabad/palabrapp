@@ -1,10 +1,10 @@
-import { FC } from 'react'
-import { Entry } from '../components/Entry'
 import { IconPencil } from '@tabler/icons-react'
+import { FC } from 'react'
 import { Link, Params, useLoaderData } from 'react-router-dom'
-import { FCForRouter, LoaderData } from '../types/loaders'
+import { Entry } from '../components/Entry'
 import { supabase } from '../supabase'
 import { selectEntryFullInfo } from '../types/entries'
+import { FCForRouter, LoaderData } from '../types/loaders'
 
 const loader = async ({ params }: { params: Params<'id'> }) => {
   if (!params.id) return { entry: undefined }

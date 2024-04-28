@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export const useAudio = (url?: string | null) => {
   const [audio] = useState(url ? new Audio(url) : undefined)

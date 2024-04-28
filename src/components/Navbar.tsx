@@ -1,8 +1,8 @@
-import { FC } from 'react'
-import { supabase } from '../supabase'
 import { IconMenu2 } from '@tabler/icons-react'
-import { useAuth } from '../hooks/useAuth'
+import { FC } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
+import { supabase } from '../supabase'
 
 async function signOut() {
   const { error } = await supabase.auth.signOut()

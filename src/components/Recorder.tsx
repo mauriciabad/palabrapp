@@ -1,8 +1,7 @@
-import { FC, useEffect, useRef } from 'react'
-import { useVoiceRecorder } from 'use-voice-recorder'
-import { useState } from 'react'
-import { cn } from '../utils/cn'
 import { IconMicrophone } from '@tabler/icons-react'
+import { FC, useEffect, useRef, useState } from 'react'
+import { useVoiceRecorder } from 'use-voice-recorder'
+import { cn } from '../utils/cn'
 
 const MIN_RECORDING_TIME = 500
 

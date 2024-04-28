@@ -1,9 +1,8 @@
-import { FC, PropsWithChildren } from 'react'
 import { Auth } from '@supabase/auth-ui-react'
-// import { ThemeSupa } from '@supabase/auth-ui-shared'
-import { supabase } from './supabase'
-import { useAuth } from './hooks/useAuth'
 import { I18nVariables } from '@supabase/auth-ui-shared'
+import { FC, PropsWithChildren } from 'react'
+import { useAuth } from './hooks/useAuth'
+import { supabase } from './supabase'
 
 const localizationVariables: I18nVariables = {
   sign_up: {

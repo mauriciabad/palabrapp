@@ -1,6 +1,5 @@
-import { FC, useState } from 'react'
-import { supabase } from '../supabase'
 import { IconDeviceFloppy, IconTrash } from '@tabler/icons-react'
+import { FC, useState } from 'react'
 import {
   Form,
   Params,
@@ -8,11 +7,12 @@ import {
   useLoaderData,
   useNavigate,
 } from 'react-router-dom'
-import { FCForRouter, LoaderData } from '../types/loaders'
-import { Recorder } from '../components/Recorder'
-import { getFileExtension } from '../utils/storage'
 import { DownloadEntryPreview } from '../components/DownloadEntryPreview'
+import { Recorder } from '../components/Recorder'
+import { supabase } from '../supabase'
 import { selectEntryFullInfo } from '../types/entries'
+import { FCForRouter, LoaderData } from '../types/loaders'
+import { getFileExtension } from '../utils/storage'
 
 const loader = async ({ params }: { params: Params<'id'> }) => {
   if (!params.id) return { entry: undefined }

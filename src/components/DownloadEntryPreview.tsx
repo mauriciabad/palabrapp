@@ -1,9 +1,9 @@
+import { useToPng } from '@hugocxl/react-to-image'
+import { IconDownload } from '@tabler/icons-react'
 import { FC } from 'react'
 import { EntryFullInfo } from '../types/entries'
-import { EntryPreview } from './EntryPreview'
-import { useToPng } from '@hugocxl/react-to-image'
 import { cn } from '../utils/cn'
-import { IconDownload } from '@tabler/icons-react'
+import { EntryPreview } from './EntryPreview'
 
 export const DownloadEntryPreview: FC<{
   entry: EntryFullInfo
