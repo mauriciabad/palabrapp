@@ -7,7 +7,7 @@
   - [ ] By categoy
 - [x] Delete entry
 - [x] Disable submit button after send to prevent duplicates
-- [ ] Canvas in draw step
+- [x] Canvas in draw step
 - [ ] Search images in google or generate with AI
 - [x] Display example sectence with quotes
 - [ ] Related words step
