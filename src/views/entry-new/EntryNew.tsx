@@ -210,7 +210,14 @@ export const EntryNew: FCForRouter<{
         <Process
           value={currentStep}
           steps={steps}
-          setCurrentStep={setCurrentStep}
+          onChange={(step) => {
+            if (
+              Object.entries(validSteps)
+                .filter(([s]) => Number(s) > currentStep && Number(s) < step)
+                .every(([, isValid]) => isValid)
+            )
+              setCurrentStep(step)
+          }}
         />
       </div>
 
@@ -288,8 +295,8 @@ interface Step {
 const Process: FC<{
   value: number
   steps: readonly Step[]
-  setCurrentStep: (value: number) => void
-}> = ({ value, steps, setCurrentStep }) => {
+  onChange: (value: number) => void
+}> = ({ value, steps, onChange }) => {
   return (
     <div className="overflow-x-auto">
       <ul className="steps w-full">
@@ -303,7 +310,7 @@ const Process: FC<{
               step.id < value && 'cursor-pointer',
             )}
             onClick={() => {
-              if (step.id < value) setCurrentStep(step.id)
+              onChange(step.id)
             }}
           >
             {step.text}
