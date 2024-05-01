@@ -10,6 +10,7 @@ import { EntryNew } from './views/entry-new/EntryNew.tsx'
 import ErrorPage from './error-page.tsx'
 import 'inter-ui/inter.css'
 import 'inter-ui/inter-variable.css'
+import { EditUserPage } from './views/EditUserPage.tsx'
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('No root element found')
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
         element: <EntryNew />,
         action: EntryNew.action,
         loader: EntryNew.loader,
+      },
+      {
+        path: 'usuario/editar',
+        element: <EditUserPage />,
       },
     ],
   },

@@ -1,6 +1,7 @@
 import { Auth } from '@supabase/auth-ui-react'
 import { I18nVariables } from '@supabase/auth-ui-shared'
 import { FC, PropsWithChildren } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import { supabase } from './supabase'
 
@@ -57,27 +58,36 @@ const localizationVariables: I18nVariables = {
 
 export const LoginProtected: FC<PropsWithChildren> = ({ children }) => {
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   if (!user) {
-    return (
-      <Auth
-        supabaseClient={supabase}
-        providers={[]}
-        appearance={{
-          extend: false,
-          className: {
-            anchor: 'label-text-alt link link-hover block mt-2',
-            button: 'btn btn-primary mt-4 w-full',
-            input: 'input input-bordered w-full',
-            label: 'label label-text',
-          },
-        }}
-        localization={{
-          variables: localizationVariables,
-        }}
-      />
-    )
+    return <CustomAuthUI />
+  }
+
+  if (!user.user_metadata.display_name) {
+    navigate('/usuario/editar')
   }
 
   return <>{children}</>
+}
+
+const CustomAuthUI: FC = () => {
+  return (
+    <Auth
+      supabaseClient={supabase}
+      providers={[]}
+      appearance={{
+        extend: false,
+        className: {
+          anchor: 'label-text-alt link link-hover block mt-2',
+          button: 'btn btn-primary mt-4 w-full',
+          input: 'input input-bordered w-full',
+          label: 'label label-text',
+        },
+      }}
+      localization={{
+        variables: localizationVariables,
+      }}
+    />
+  )
 }
