@@ -11,6 +11,8 @@ import ErrorPage from './error-page.tsx'
 import 'inter-ui/inter.css'
 import 'inter-ui/inter-variable.css'
 import { EditUserPage } from './views/EditUserPage.tsx'
+import { AdminPage } from './views/AdminPage.tsx'
+import { AdminProtected } from './AdminProtected.tsx'
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('No root element found')
@@ -51,6 +53,15 @@ const router = createBrowserRouter([
       {
         path: 'usuario/editar',
         element: <EditUserPage />,
+      },
+      {
+        path: 'admin',
+        element: (
+          <AdminProtected>
+            <AdminPage />
+          </AdminProtected>
+        ),
+        loader: AdminPage.loader,
       },
     ],
   },
