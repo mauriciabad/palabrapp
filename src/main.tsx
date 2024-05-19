@@ -1,18 +1,19 @@
+import 'inter-ui/inter-variable.css'
+import 'inter-ui/inter.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { AdminProtected } from './AdminProtected.tsx'
 import Root from './Root.tsx'
+import ErrorPage from './error-page.tsx'
 import './index.css'
+import { AdminPage } from './views/AdminPage.tsx'
+import { EditUserPage } from './views/EditUserPage.tsx'
 import { EntryEdit } from './views/EntryEdit.tsx'
 import { EntryList } from './views/EntryList.tsx'
 import { EntryView } from './views/EntryView.tsx'
+import { TermsOfService } from './views/TermsOfService.tsx'
 import { EntryNew } from './views/entry-new/EntryNew.tsx'
-import ErrorPage from './error-page.tsx'
-import 'inter-ui/inter.css'
-import 'inter-ui/inter-variable.css'
-import { EditUserPage } from './views/EditUserPage.tsx'
-import { AdminPage } from './views/AdminPage.tsx'
-import { AdminProtected } from './AdminProtected.tsx'
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('No root element found')
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
         path: '',
         element: <EntryList />,
         loader: EntryList.loader,
+      },
+      {
+        path: 'tos',
+        element: <TermsOfService />,
       },
       {
         path: 'palabras/',
