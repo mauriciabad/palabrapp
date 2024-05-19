@@ -10,7 +10,7 @@ import { addTimeToUrl } from '../utils/strings'
 import { ShareEntryPreview } from './ShareEntryPreview'
 
 export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
-  const { playing, toggle } = useAudio(entry.pronunciation)
+  const { playing, toggle } = useAudio(entry.pronunciation, entry.updated_at)
 
   return (
     <li className="card border bg-white shadow-xl">
@@ -19,7 +19,7 @@ export const Entry: FC<{ entry: EntryFullInfo }> = ({ entry }) => {
           <div className="flex items-center justify-between gap-4 self-stretch xs2:flex-col xs2:justify-start xs2:self-center">
             {entry.drawing ? (
               <img
-                src={addTimeToUrl(entry.drawing)}
+                src={addTimeToUrl(entry.drawing, entry.updated_at)}
                 alt="Dibujo"
                 className="h-auto w-20 rounded"
               />

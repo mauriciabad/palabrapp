@@ -17,7 +17,7 @@ export const EntryPreview = forwardRef<
     >
       {entry.drawing && (
         <img
-          src={addTimeToUrl(entry.drawing)}
+          src={addTimeToUrl(entry.drawing, entry.updated_at)}
           alt=""
           className="mx-auto h-auto w-full max-w-[200px] rounded"
         />

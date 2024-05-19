@@ -70,6 +70,7 @@ export type Database = {
           pronunciation: string | null
           related_entries: string | null
           sentence: string
+          updated_at: string
           user_id: string
           word: string
         }
@@ -83,6 +84,7 @@ export type Database = {
           pronunciation?: string | null
           related_entries?: string | null
           sentence: string
+          updated_at?: string
           user_id?: string
           word: string
         }
@@ -96,6 +98,7 @@ export type Database = {
           pronunciation?: string | null
           related_entries?: string | null
           sentence?: string
+          updated_at?: string
           user_id?: string
           word?: string
         }

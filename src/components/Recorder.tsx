@@ -9,7 +9,10 @@ const MIN_RECORDING_TIME = 500
 export const Recorder: FC<{
   name: string
   size?: 'sm' | 'lg'
-  defaultValue?: string | null
+  defaultValue?: {
+    url: string | null
+    updatedAt: string | Date
+  }
   className?: string
 }> = ({ name, size = 'lg', defaultValue, className }) => {
   const [record, setRecord] = useState<Blob | null>(null)
@@ -128,9 +131,9 @@ export const Recorder: FC<{
           className={cn('w-full')}
         />
       ) : (
-        defaultValue && (
+        defaultValue?.url && (
           <audio
-            src={addTimeToUrl(defaultValue)}
+            src={addTimeToUrl(defaultValue.url, defaultValue.updatedAt)}
             controls
             preload={'metadata'}
             className={cn('w-full')}

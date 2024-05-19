@@ -234,7 +234,7 @@ export const EntryEdit: FCForRouter<{
 
             {entry.drawing && !hideDrawing && (
               <img
-                src={addTimeToUrl(entry.drawing)}
+                src={addTimeToUrl(entry.drawing, entry.updated_at)}
                 alt="Dibujo"
                 className="mx-auto mt-4 w-full max-w-48 rounded-lg bg-white shadow-lg"
               />
@@ -252,7 +252,10 @@ export const EntryEdit: FCForRouter<{
             <Recorder
               name="pronunciation"
               size="sm"
-              defaultValue={entry.pronunciation}
+              defaultValue={{
+                url: entry.pronunciation,
+                updatedAt: entry.updated_at,
+              }}
               className="mt-8"
             />
             <SaveButton loading={formSubmitted} />

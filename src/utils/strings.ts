@@ -15,8 +15,10 @@ export function normalize(text: string) {
     .replace(/[^a-z0-9 ]/g, '')
 }
 
-export function addTimeToUrl(url: string) {
+export function addTimeToUrl(url: string, updatedAt: string | Date) {
   const urlObj = new URL(url)
-  urlObj.searchParams.append('t', new Date().getTime().toString())
+  const updatedatString =
+    updatedAt instanceof Date ? updatedAt.getTime().toString() : updatedAt
+  urlObj.searchParams.append('t', updatedatString)
   return urlObj.toString()
 }
