@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { supabase } from '../supabase'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { IconAsterisk, IconExternalLink } from '@tabler/icons-react'
 
 export const EditUserPage: FC = () => {
@@ -88,13 +88,13 @@ export const EditUserPage: FC = () => {
               aria-label="(Campo obligatorio)"
             />
             Acepto los{' '}
-            <a href="/tos" className="link" target="_blank" rel="noreferrer">
+            <Link to="/tos" className="link" target="_blank" rel="noreferrer">
               Términos de servicio
               <IconExternalLink
                 size={16}
                 className="inline-block align-text-bottom"
               />
-            </a>
+            </Link>
           </span>
         </label>
       </div>
