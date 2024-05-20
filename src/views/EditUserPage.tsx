@@ -9,6 +9,7 @@ export const EditUserPage: FC = () => {
   const navigate = useNavigate()
   const [displayName, setDisplayName] = useState<string>('')
   const [tosAccepted, setTosAccepted] = useState<boolean>(false)
+  const [emailAccepted, setEmailAccepted] = useState<boolean>(false)
 
   useEffect(() => {
     if (user) {
@@ -17,6 +18,9 @@ export const EditUserPage: FC = () => {
       )
       setTosAccepted(
         (user.user_metadata.tos_accepted as boolean | undefined) ?? false,
+      )
+      setEmailAccepted(
+        (user.user_metadata.email_accepted as boolean | undefined) ?? false,
       )
     }
   }, [user])
@@ -28,6 +32,7 @@ export const EditUserPage: FC = () => {
       data: {
         display_name: displayName,
         tos_accepted: tosAccepted,
+        email_accepted: emailAccepted,
       },
     })
 
@@ -90,6 +95,28 @@ export const EditUserPage: FC = () => {
                 className="inline-block align-text-bottom"
               />
             </a>
+          </span>
+        </label>
+      </div>
+      <div className="form-control self-start">
+        <label className="label cursor-pointer">
+          <input
+            type="checkbox"
+            checked={emailAccepted}
+            onChange={(e) => {
+              setEmailAccepted(e.target.checked)
+            }}
+            className="checkbox"
+            required
+          />
+          <span className="label-text pl-2">
+            <IconAsterisk
+              size={12}
+              stroke={4}
+              className="mr-0.5 inline-block align-baseline text-red-500"
+              aria-label="(Campo obligatorio)"
+            />
+            Acepto recibir comunicaciones por email
           </span>
         </label>
       </div>

@@ -59,7 +59,9 @@ const localizationVariables: I18nVariables = {
 
 const isUserInfoComplete = (user: User) => {
   return Boolean(
-    user.user_metadata.display_name && user.user_metadata.tos_accepted,
+    user.user_metadata.display_name &&
+      user.user_metadata.tos_accepted &&
+      user.user_metadata.email_accepted,
   )
 }
 
@@ -72,7 +74,7 @@ export const LoginProtected: FC<PropsWithChildren> = ({ children }) => {
   }
 
   if (!isUserInfoComplete(user)) {
-    navigate('/usuario/editar')
+    navigate('/usuario/editar', { replace: true })
   }
 
   return <>{children}</>
