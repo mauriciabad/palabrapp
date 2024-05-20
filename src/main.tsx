@@ -67,7 +67,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: '/tos',
+    path: 'tos',
     element: <TermsOfService />,
   },
 ])
