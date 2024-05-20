@@ -47,8 +47,8 @@ No obstante, si el responsable del tratamiento tuviese dudas razonables en relac
 
 export const TermsOfService: FC = () => {
   return (
-    <div className="pb-20">
-      <Markdown className="lg:prose-xl prose">{tos}</Markdown>
-    </div>
+    <Markdown className="lg:prose-xl prose mx-auto px-4 pb-20 pt-8">
+      {tos}
+    </Markdown>
   )
 }

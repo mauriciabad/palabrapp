@@ -30,10 +30,6 @@ const router = createBrowserRouter([
         loader: EntryList.loader,
       },
       {
-        path: 'tos',
-        element: <TermsOfService />,
-      },
-      {
         path: 'palabras/',
         element: <EntryList />,
         loader: EntryList.loader,
@@ -69,6 +65,10 @@ const router = createBrowserRouter([
         loader: AdminPage.loader,
       },
     ],
+  },
+  {
+    path: '/tos',
+    element: <TermsOfService />,
   },
 ])
 
