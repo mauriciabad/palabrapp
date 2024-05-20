@@ -4,6 +4,7 @@ import { FC, PropsWithChildren } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import { supabase } from './supabase'
+import { User } from '@supabase/supabase-js'
 
 const localizationVariables: I18nVariables = {
   sign_up: {
@@ -56,6 +57,12 @@ const localizationVariables: I18nVariables = {
   },
 }
 
+const isUserInfoComplete = (user: User) => {
+  return Boolean(
+    user.user_metadata.display_name && user.user_metadata.tos_accepted,
+  )
+}
+
 export const LoginProtected: FC<PropsWithChildren> = ({ children }) => {
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -64,7 +71,7 @@ export const LoginProtected: FC<PropsWithChildren> = ({ children }) => {
     return <CustomAuthUI />
   }
 
-  if (!user.user_metadata.display_name) {
+  if (!isUserInfoComplete(user)) {
     navigate('/usuario/editar')
   }
 
